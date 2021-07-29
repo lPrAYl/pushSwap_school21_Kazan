@@ -9,7 +9,7 @@ void	ft_error(char *s)
 int main(int argc, char **argv)
 {
 	DblLinkedList	*stackA;
-	t_position		*best_stack;
+	t_position		best_stack;
 
 	if (argc > 1)
 	{

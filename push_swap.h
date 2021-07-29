@@ -64,7 +64,7 @@ DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
 void 			ft_check_chunk(char *s);
 DblLinkedList	*ft_validate_data(char **argv);
-t_position		*markup_stack(DblLinkedList *stack);
+t_position		markup_stack(DblLinkedList *stack);
 
 void			operation(DblLinkedList *stackA, t_position *best_stack);
 

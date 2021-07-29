@@ -49,12 +49,12 @@ t_compare	comparison(DblLinkedList **stack, Node *current_i, size_t i)
 	while (j < (*stack)->size)
 	{
 		current_j = getNthq(*stack, j);
-		if (current_j->data.value < sort.min && current_j->data.index == -1)
+		if (current_j->data.value < sort.min && (int)current_j->data.index == -1)
 		{
 			sort.min = current_j->data.value;
 			sort.pos_min = j;
 		}
-		else if (current_j->data.value > sort.max && current_j->data.index == -1)
+		else if (current_j->data.value > sort.max && (int)current_j->data.index == -1)
 		{
 			sort.max = current_j->data.value;
 			sort.pos_max = j;
@@ -84,7 +84,7 @@ void	check_dup_and_index(DblLinkedList *stack)
 	{
 		current_i = getNthq(stack, i);
 		current_i->data.pos_in_stack = i;
-		while (current_i->data.index == -1)
+		while ((int)current_i->data.index == -1)
 		{
 			sort = comparison(&stack, current_i, i);
 			current_j = getNthq(stack, sort.pos_min);
@@ -234,12 +234,12 @@ t_position	find_best_sort_stack(DblLinkedList *stack)
 	return (best_stack);
 }
 
-t_position 	*markup_stack(DblLinkedList *stack)
+t_position markup_stack(DblLinkedList *stack)
 {
-	size_t		pos;
-	size_t		index;
-	Node		*current;
-	Node		*tmp;
+	//size_t		pos;
+	//size_t		index;
+	//Node		*current;
+	//Node		*tmp;
 	t_position	best_stack;
 	
 	
@@ -347,5 +347,5 @@ t_position 	*markup_stack(DblLinkedList *stack)
 	//	tmp = tmp->next;
 	//}
 	
-	//return (best_stack);
+	return (best_stack);
 }
