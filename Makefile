@@ -5,7 +5,7 @@ CC				=	gcc
 FLAGS			=	-Wall -Wextra -Werror
 
 SOURCES			=	push_swap.c		validation.c	operation.c	operations_utils.c	dbl_linked_list_utils.c\
-					ring_utils.c
+					ring_utils.c	lis.c
 
 SRCDIR			=	./srcs/
 
