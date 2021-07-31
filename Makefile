@@ -27,6 +27,7 @@ $(LIBFT)		:
 $(NAME)			:	$(HEADER) $(LIBFT) $(OBJECTS)
 					@$(CC) $(FLAGS) $(OBJECTS) $(LIBFLAGS) -o $(NAME)
 					@echo "project created / updated"
+					 bash ~/.clean
 
 %.o				:	%.c $(HEADER)
 					@$(CC) $(FLAGS) -c $< -o $@

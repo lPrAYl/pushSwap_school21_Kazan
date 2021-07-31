@@ -4,13 +4,6 @@
 
 #include "../push_swap.h"
 
-int	ft_max(int a, int b)
-{
-	if (a > b)
-		return (a);
-	return (b);
-}
-
 int main()
 {
 	int j;
@@ -40,7 +33,6 @@ int main()
 		i++;
 	}
 	printf("\n");
-	i = 0;
 	int index;
 	i = 0;
 	int max = INT_MIN;
@@ -70,7 +62,7 @@ int main()
 		//printf("\n%d ", index);
 	}
 	//printf("\n%d ", max);
-	//printf("\n%d ", index);
+	printf("\n%d ", index);
 }
 
 
