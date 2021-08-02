@@ -149,203 +149,95 @@ Node	*current_prev(Node *list, DblLinkedList *stack)
 	return (current);
 }
 
-t_position	best_stack_init()
+size_t	GetCeilIndex(DblLinkedList *stack, t_best *best, size_t lenght, size_t key)
 {
-	t_position	best_stack;
+	int		left;
+	int 	right;
+	int		middle;
+	Node 	*current;
 	
-	best_stack.index_begin = 0;
-	best_stack.step = 0;
-	best_stack.count_elem = 0;
-	return (best_stack);
-}
-
-t_position	fill_best_stack(size_t index_begin, size_t step, size_t count_elem)
-{
-	t_position	best_stack;
-	
-	best_stack.index_begin = index_begin;
-	best_stack.step = step;
-	best_stack.count_elem = count_elem;
-	return (best_stack);
-}
-
-t_position	find_count_sort_numb(DblLinkedList *stack, Node *tmp, t_position best_stack, size_t step)
-{
-	size_t		index_begin;
-	size_t		index_end;
-	size_t		count_elem;
-	size_t		j;
-	Node		*current_forward;
-	Node		*current_back;
-	
-	index_begin = tmp->data.index;
-	index_end = index_begin;
-	current_forward = current_next(tmp, stack);
-	current_back = current_prev(tmp, stack);
-	count_elem = 1;
-	j = 0;
-	size_t k = 0;
-	while (current_forward->data.index != index_begin && current_back->data.index != index_end)
+	left = -1;
+	right = (int)lenght - 1;
+	while (right - left > 1)
 	{
-		if (current_forward->data.index > index_begin + k * step && current_forward->data.index <= index_begin + (k + 1) * step)
-		{
-			if (current_forward->data.index == index_begin + (k + 1) * step)
-			{
-				index_end = current_forward->data.index;
-				k++;
-			}
-			count_elem++;
-		}
-		if (current_back->data.index < index_end - k * step && current_forward->data.index >= index_end - (k + 1) * step)
-		{
-			if (current_back->data.index == index_end - (k + 1) * step)
-			{
-				index_begin = current_back->data.index;
-				k++;
-			}
-			count_elem++;
-		}
-		current_forward = current_next(current_forward, stack);
-		current_back = current_prev(current_back, stack);
+		middle = left + (right - left) / 2;
+		current = getNthq(stack, best[middle].tailIndexes);
+		if (current->data.index >= key)
+			right = middle;
+		else
+			left = middle;
 	}
-	if (count_elem > best_stack.count_elem)
-		best_stack = fill_best_stack(index_begin, step, count_elem);
-	return (best_stack);
+	return (right);
 }
 
-t_position	find_best_sort_stack(DblLinkedList *stack)
+size_t	LongestIncreasingSubsequence(DblLinkedList *stack, Node *tmp)
 {
-	size_t		step;
-	Node		*tmp;
-	t_position	best_stack;
+	size_t 	i;
+	size_t	position;
+	size_t	lenght;
+	t_best	*best;
+	Node	*current;
 	
-	tmp = stack->head;
-	best_stack = best_stack_init();
-	while (tmp)
+	best = malloc(sizeof(t_best) * (stack->size + 1));
+	if (!best)
+		ft_error("Malloc error\n");
+	i = 0;
+	while (i < stack->size + 1)
 	{
-		step = 1;
-		while (step * step < stack->size)
+		best[i].tailIndexes = 0;
+		best[i].prevIndexes = -1;
+		i++;
+	}
+	i = 1;
+	lenght = 1;
+	while (i < stack->size)
+	{
+		current = current_next(tmp, stack);
+		Node *current_begin = getNthq(stack, best[0].tailIndexes);
+		Node *current_back = getNthq(stack, best[lenght - 1].tailIndexes);
+		if (current->data.index < current_begin->data.index)
+			best[0].tailIndexes = i;
+		else if (current->data.index > current_back->data.index)
 		{
-			best_stack = find_count_sort_numb(stack, tmp, best_stack, step);
-			step++;
+			best[i].prevIndexes = best[lenght - 1].tailIndexes;
+			best[lenght].tailIndexes = i;
+			lenght++;
+		}
+		else
+		{
+			position = GetCeilIndex(stack, best, lenght, current->data.index);
+			best[i].prevIndexes = best[position - 1].tailIndexes;
+			best[position].tailIndexes = i;
 		}
 		tmp = tmp->next;
+		i++;
 	}
-	return (best_stack);
+	i = 0;
+	while (i < stack->size + 1)
+	{
+		ft_printf("%d\t", best[i].prevIndexes);
+		i++;
+	}
+	return (lenght);
 }
 
-t_position markup_stack(DblLinkedList *stack)
-{
-	//size_t		pos;
-	//size_t		index;
-	//Node		*current;
-	//Node		*tmp;
-	t_position	best_stack;
-	
-	
-	best_stack = find_best_sort_stack(stack);
-	ft_printf("%d\n", best_stack.index_begin);
-	ft_printf("%d\n", best_stack.step);
-	ft_printf("%d\n", best_stack.count_elem);
-	//if (best_stack.count_elem == stack->size)
-	//{
-	//	pos = best_stack.position_begin;
-	//
-	//	if (pos < stack->size / 2 && pos > 0)
-	//		while (pos--)
-	//			ra(&stack);
-	//	else if (pos >= stack->size / 2)
-	//		while (pos++ < stack->size)
-	//			rra(&stack);
-	//	ft_putstr_fd("List is sorted\n", 1);
-	//	exit(EXIT_SUCCESS);
-	//}
-	//printDblLinkedList(stack);
-	//
-	//
-	//tmp = getNthq(stack, best_stack.position_begin);
-	//tmp->data.keep_in_stack = 1;
-	//index = tmp->data.index;
-	//current = current_next(tmp, stack);
-	//while (current->data.index != tmp->data.index)
-	//{
-	//	if (current->data.index > index )
-	//	{
-	//		current->data.keep_in_stack = 1;
-	//		index = current->data.index;
-	//	}
-	//	current = current_next(current, stack);
-	//}
-	printDblLinkedList(stack);
-	//{
-	//	i = 0;
-	//	while (i < best_stack->count_elem)
-	//	{
-	//		if (tmp->data.index == best_stack->begin + i * best_stack->step)
-	//		{
-	//			tmp_pos = tmp;
-	//			tmp->data.keep_in_stack = 1;
-	//			index_begin = tmp->data.index;
-	//			begin = index_begin;
-	//			if (index_begin == best_stack->begin)
-	//			{
-	//				while (tmp_pos->prev && tmp_pos->prev->data.keep_in_stack == 0)
-	//				{
-	//					size_t j = 2;
-	//					while (j <= best_stack->step)
-	//					{
-	//						if (tmp_pos->prev->data.index < begin  &&
-	//								tmp_pos->prev->data.keep_in_stack == 0)
-	//						{
-	//							begin = tmp_pos->prev->data.index;
-	//							tmp_pos->prev->data.keep_in_stack = 1;
-	//						}
-	//						j++;
-	//					}
-	//					tmp_pos = tmp_pos->prev;
-	//				}
-	//			}
-	//			else if (index_begin == best_stack->begin + (best_stack->count_elem - 1) * best_stack->step)
-	//			{
-	//				while (tmp_pos->next && tmp_pos->next->data.keep_in_stack == 0)
-	//				{
-	//					size_t j = 2;
-	//					while (j <= best_stack->step)
-	//					{
-	//						if (tmp_pos->next->data.index > begin &&
-	//								tmp_pos->next->data.keep_in_stack == 0)
-	//						{
-	//							begin = tmp_pos->next->data.index;
-	//							tmp_pos->next->data.keep_in_stack = 1;
-	//						}
-	//						j++;
-	//					}
-	//					tmp_pos = tmp_pos->next;
-	//				}
-	//			}
-	//			else
-	//			{
-	//				while (tmp_pos->next && tmp_pos->next->data.keep_in_stack == 0 && tmp_pos->next->data.index != index_begin + best_stack->step)
-	//				{
-	//					size_t j = 2;
-	//					while (j <= best_stack->step)
-	//					{
-	//						if (tmp_pos->next->data.index > begin && tmp_pos->next->data.index < index_begin + j &&
-	//							tmp_pos->next->data.keep_in_stack == 0)
-	//						{
-	//							begin = tmp_pos->next->data.index;
-	//							tmp_pos->next->data.keep_in_stack = 1;
-	//						}
-	//						j++;
-	//					}
-	//					tmp_pos = tmp_pos->next;
-	//				}
-	//			}
-	//		}
-	//		i++;
-	//	}
-	//	tmp = tmp->next;
-	//}
-	
-	return (best_stack);
-}
+//t_position	find_best_sort_stack(DblLinkedList *stack)
+//{
+//	Node 	*tmp;
+//	size_t	lenght;
+//
+//	tmp = stack->head;
+//	while (tmp)
+//	{
+//		lenght = LongestIncreasingSubsequence(stack, tmp);
+//		tmp = tmp->next;
+//	}
+//}
+//
+//t_position markup_stack(DblLinkedList *stack)
+//{
+//
+//	printDblLinkedList(stack);
+//
+//	return (best_stack);
+//}

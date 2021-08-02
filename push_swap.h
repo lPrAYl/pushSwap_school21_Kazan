@@ -19,12 +19,11 @@ typedef struct  s_data
 	int		keep_in_stack;
 }               t_data;
 
-typedef struct	s_position
+typedef struct	s_best
 {
-	size_t 	index_begin;
-	size_t	step;
-	size_t	count_elem;
-}				t_position;
+	int 	tailIndexes;
+	int 	prevIndexes;
+}				t_best;
 
 typedef struct  Node
 {
@@ -64,9 +63,11 @@ DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
 void 			ft_check_chunk(char *s);
 DblLinkedList	*ft_validate_data(char **argv);
-t_position		markup_stack(DblLinkedList *stack);
+//t_position		markup_stack(DblLinkedList *stack);
 
-void			operation(DblLinkedList *stackA, t_position *best_stack);
+size_t	LongestIncreasingSubsequence(DblLinkedList *stack, Node *tmp);
+
+//void			operation(DblLinkedList *stackA, t_position *best_stack);
 
 void			ft_error(char *s);
 

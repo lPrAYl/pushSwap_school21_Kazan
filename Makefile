@@ -2,10 +2,10 @@ NAME			=	push_swap
 
 CC				=	gcc
 
-FLAGS			=	-Wall -Wextra -Werror
+FLAGS			=	-Wall -Wextra -Werror -g
 
 SOURCES			=	push_swap.c		validation.c	operation.c	operations_utils.c	dbl_linked_list_utils.c\
-					ring_utils.c	lis.c
+					ring_utils.c
 
 SRCDIR			=	./srcs/
 

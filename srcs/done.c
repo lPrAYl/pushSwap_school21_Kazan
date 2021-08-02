@@ -44,8 +44,7 @@ int	LongestIncreasingSubsequence(int arr[], int lenght)
 		else if (arr[i] > arr[tailIndices[len - 1]])
 		{
 			prevIndices[i] = tailIndices[len - 1];
-			tailIndices[len] = i;
-			len++;
+			tailIndices[len++] = i;
 		}
 		else
 		{
@@ -67,12 +66,12 @@ int	LongestIncreasingSubsequence(int arr[], int lenght)
 }
 
 
-int main()
-{
-	int	arr[] = {2, 5, 3, 7, 11, 8, 10, 13, 6};
-	const int	lenght = sizeof(arr) / sizeof(int);
-	
-	int n = LongestIncreasingSubsequence(arr[lenght], lenght);
-	printf("%d\n", n);
-}
+//int main()
+//{
+//	int	arr[] = {2, 5, 3, 7, 11, 8, 10, 13, 6};
+//	const int	lenght = sizeof(arr) / sizeof(int);
+//
+//	int n = LongestIncreasingSubsequence(arr[lenght], lenght);
+//	printf("%d\n", n);
+//}
 
