@@ -19,12 +19,6 @@ typedef struct  s_data
 	int		keep_in_stack;
 }               t_data;
 
-typedef struct	s_best
-{
-	int 	tailIndexes;
-	int 	prevIndexes;
-}				t_best;
-
 typedef struct  Node
 {
 	struct s_data	data;
@@ -38,6 +32,14 @@ typedef	struct	DblLinkedList
 	struct Node	*head;
 	struct Node	*tail;
 }				DblLinkedList;
+
+typedef struct	s_best
+{
+	size_t 	tailIndexes;
+	size_t 	prevIndexes;
+	size_t	lenght;
+	DblLinkedList *stack;
+}				t_best;
 
 typedef struct	Ring
 {
@@ -59,13 +61,15 @@ void			printInt(struct s_data data);
 void			printDblLinkedList(DblLinkedList *list);
 DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
-
+void			ra(DblLinkedList **stackA);
 
 void 			ft_check_chunk(char *s);
 DblLinkedList	*ft_validate_data(char **argv);
-//t_position		markup_stack(DblLinkedList *stack);
 
-size_t	LongestIncreasingSubsequence(DblLinkedList *stack, Node *tmp);
+t_best 			*find_best_sort_stack(DblLinkedList *stack);
+void			markup_stack(DblLinkedList *stack);
+
+t_best 			*LongestIncreasingSubsequence(DblLinkedList *tmp);
 
 //void			operation(DblLinkedList *stackA, t_position *best_stack);
 

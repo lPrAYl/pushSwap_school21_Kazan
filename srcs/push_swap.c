@@ -14,9 +14,7 @@ int main(int argc, char **argv)
 	if (argc > 1)
 	{
 		stackA = ft_validate_data(argv);
-		Node *tmp = stackA->head;
-		size_t lenght = LongestIncreasingSubsequence(stackA, tmp);
-		ft_printf("\n%d\n", lenght);
+		markup_stack(stackA);
 		//best_stack = markup_stack(stackA);
 		//printDblLinkedList(stackA);
 		//operation(stackA, best_stack);
