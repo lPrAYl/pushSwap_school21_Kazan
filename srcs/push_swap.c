@@ -9,15 +9,12 @@ void	ft_error(char *s)
 int main(int argc, char **argv)
 {
 	DblLinkedList	*stackA;
-	//t_position		best_stack;
-
+	
 	if (argc > 1)
 	{
 		stackA = ft_validate_data(argv);
 		markup_stack(stackA);
-		//best_stack = markup_stack(stackA);
-		//printDblLinkedList(stackA);
-		//operation(stackA, best_stack);
+		operation(stackA);
 		//pb(&stackA, &stackB);
 		//pa(&stackA, &stackB);
 		//ra(&stackA);

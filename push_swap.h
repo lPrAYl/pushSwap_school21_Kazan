@@ -61,17 +61,31 @@ void			printInt(struct s_data data);
 void			printDblLinkedList(DblLinkedList *list);
 DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
+
+void			sa(DblLinkedList **stackA);
+void			sb(DblLinkedList **stackB);
+void			ss(DblLinkedList **stackA, DblLinkedList **stackB);
+void			pa(DblLinkedList **stackA, DblLinkedList **stackB);
+void			pb(DblLinkedList **stackA, DblLinkedList **stackB);
 void			ra(DblLinkedList **stackA);
+void			rb(DblLinkedList **stackB);
+void			rr(DblLinkedList **stackA, DblLinkedList **stackB);
+void			rra(DblLinkedList **stackA);
+void			rrb(DblLinkedList **stackB);
+void			rrr(DblLinkedList **stackA, DblLinkedList **stackB);
 
 void 			ft_check_chunk(char *s);
 DblLinkedList	*ft_validate_data(char **argv);
+
 
 t_best 			*find_best_sort_stack(DblLinkedList *stack);
 void			markup_stack(DblLinkedList *stack);
 
 t_best 			*LongestIncreasingSubsequence(DblLinkedList *tmp);
 
-//void			operation(DblLinkedList *stackA, t_position *best_stack);
+void			operation(DblLinkedList *stackA);
+
+int	ft_abc(int a, int b);
 
 void			ft_error(char *s);
 

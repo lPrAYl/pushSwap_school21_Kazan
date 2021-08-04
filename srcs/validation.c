@@ -130,29 +130,29 @@ DblLinkedList	*ft_validate_data(char **argv)
 
 /******************************************/
 
-Node	*current_next(Node *list, DblLinkedList *stack)
-{
-	Node	*current;
-	
-	if (list->next == NULL)
-		current = stack->head;
-	else
-		current = list->next;
-	return (current);
-}
+//Node	*current_next(Node *list, DblLinkedList *stack)
+//{
+//	Node	*current;
+//
+//	if (list->next == NULL)
+//		current = stack->head;
+//	else
+//		current = list->next;
+//	return (current);
+//}
+//
+//Node	*current_prev(Node *list, DblLinkedList *stack)
+//{
+//	Node	*current;
+//
+//	if (list->prev == NULL)
+//		current = stack->tail;
+//	else
+//		current = list->prev;
+//	return (current);
+//}
 
-Node	*current_prev(Node *list, DblLinkedList *stack)
-{
-	Node	*current;
-	
-	if (list->prev == NULL)
-		current = stack->tail;
-	else
-		current = list->prev;
-	return (current);
-}
-
-size_t	GetCeilIndex(DblLinkedList *tmp, t_best *best, size_t lenght, size_t key)
+size_t	GetCeilIndex(DblLinkedList *tmp, t_best *subsequnce, size_t key)
 {
 	int		left;
 	int 	right;
@@ -160,11 +160,11 @@ size_t	GetCeilIndex(DblLinkedList *tmp, t_best *best, size_t lenght, size_t key)
 	Node 	*current;
 	
 	left = -1;
-	right = (int)lenght - 1;
+	right = (int)subsequnce->lenght - 1;
 	while (right - left > 1)
 	{
 		middle = left + (right - left) / 2;
-		current = getNthq(tmp, best[middle].tailIndexes);
+		current = getNthq(tmp, subsequnce[middle].tailIndexes);
 		if (current->data.index >= key)
 			right = middle;
 		else
@@ -173,87 +173,101 @@ size_t	GetCeilIndex(DblLinkedList *tmp, t_best *best, size_t lenght, size_t key)
 	return (right);
 }
 
-t_best 	*LongestIncreasingSubsequence(DblLinkedList *tmp)
+
+t_best	*init_subsequence(DblLinkedList *stack)
+{
+	size_t	i;
+	t_best	*subsequence;
+	
+	subsequence = malloc(sizeof(t_best) * (stack->size + 1));
+	if (!subsequence)
+		ft_error("Malloc error\n");
+	i = 0;
+	while (i < stack->size + 1)
+	{
+		subsequence[i].tailIndexes = 0;
+		subsequence[i].prevIndexes = -1;
+		i++;
+	}
+	subsequence->lenght = 1;
+	subsequence->stack = stack;
+	return (subsequence);
+}
+
+t_best 	*LongestIncreasingSubsequence(DblLinkedList *stack)
 {
 	size_t 	i;
 	size_t	position;
-	t_best	*best;
+	t_best	*subsequence;
 	Node	*current;
-	
-	best = malloc(sizeof(t_best) * (tmp->size + 1));
-	if (!best)
-		ft_error("Malloc error\n");
-	i = 0;
-	while (i < tmp->size + 1)
-	{
-		best[i].tailIndexes = 0;
-		best[i].prevIndexes = -1;
-		i++;
-	}
-	best->lenght = 1;
+
 	i = 1;
-	current = tmp->head;
-	while (i < tmp->size)
+	subsequence = init_subsequence(stack);
+	current = stack->head;
+	while (i < stack->size)
 	{
 		current = current->next;
-		Node *current_begin = getNthq(tmp, best[0].tailIndexes);
-		Node *current_back = getNthq(tmp, best[best->lenght - 1].tailIndexes);
+		Node *current_begin = getNthq(stack, subsequence[0].tailIndexes);
+		Node *current_back = getNthq(stack, subsequence[subsequence->lenght - 1].tailIndexes);
 		if (current->data.index < current_begin->data.index)
-			best[0].tailIndexes = i;
+			subsequence[0].tailIndexes = i;
 		else if (current->data.index > current_back->data.index)
 		{
-			best[i].prevIndexes = best[best->lenght - 1].tailIndexes;
-			best[best->lenght].tailIndexes = i;
-			best->lenght++;
+			subsequence[i].prevIndexes = subsequence[subsequence->lenght - 1].tailIndexes;
+			subsequence[subsequence->lenght].tailIndexes = i;
+			subsequence->lenght++;
 		}
 		else
 		{
-			position = GetCeilIndex(tmp, best, best->lenght, current->data.index);
-			best[i].prevIndexes = best[position - 1].tailIndexes;
-			best[position].tailIndexes = i;
+			position = GetCeilIndex(stack, subsequence, current->data.index);
+			subsequence[i].prevIndexes = subsequence[position - 1].tailIndexes;
+			subsequence[position].tailIndexes = i;
 		}
 		i++;
 	}
-	return (best);
+	return (subsequence);
 }
 
 t_best 	*find_best_sort_stack(DblLinkedList *stack)
 {
-	DblLinkedList	*tmp;
 	size_t	i;
 	size_t	lenght;
-	t_best	*best;
-	t_best	*best_tmp;
-
-	tmp = stack;
+	t_best	*subsequebce;
+	t_best	*best_subsequence;
+	DblLinkedList	*tmp;
 	
-	lenght = 1;
 	i = 0;
-	while (i < tmp->size)
+	lenght = 0;
+	tmp = stack;
+	while (i < stack->size)
 	{
-		best = LongestIncreasingSubsequence(tmp);
-		if (best->lenght > lenght)
+		subsequebce = LongestIncreasingSubsequence(tmp);
+		if (subsequebce->lenght > lenght)
 		{
-			best->stack = tmp;
-			lenght = best->lenght;
-			best_tmp = best;
-			
+			lenght = subsequebce->lenght;
+			best_subsequence = subsequebce;
 		}
+		size_t j = best_subsequence[best_subsequence->lenght - 1].tailIndexes;
+		printDblLinkedList(subsequebce->stack);
+		while ((int)j >= 0)
+		{
+			Node *current = getNthq(best_subsequence->stack, j);
+			ft_printf("%d\t", current->data.value);
+			j = best_subsequence[j].prevIndexes;
+		}
+		ft_printf("\n");
 		ra(&tmp);
 		i++;
 	}
-	
-	ft_printf("%d\n", best_tmp->lenght);
-	size_t j = best_tmp[best->lenght - 1].tailIndexes;
-	while ((int)j >= 0)
-	{
-		Node *current = getNthq(best_tmp->stack, j);
-		ft_printf("%d\t", current->data.value);
-		j = best_tmp[j].prevIndexes;
-	}
-	ft_printf("%d\n", best_tmp->lenght);
-	ft_printf("\n");
-	return (best_tmp);
+	//size_t j = best_subsequence[best_subsequence->lenght - 1].tailIndexes;
+	//while ((int)j >= 0)
+	//{
+	//	Node *current = getNthq(best_subsequence->stack, j);
+	//	ft_printf("%d\t", current->data.value);
+	//	j = best_subsequence[j].prevIndexes;
+	//}
+	//ft_printf("\n%d\n", best_subsequence->lenght);
+	return (best_subsequence);
 }
 
 void	markup_stack(DblLinkedList *stack)
@@ -270,5 +284,4 @@ void	markup_stack(DblLinkedList *stack)
 		current->data.keep_in_stack = 1;
 		i = best_stack[i].prevIndexes;
 	}
-	printDblLinkedList(stack);
 }
