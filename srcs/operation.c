@@ -59,7 +59,7 @@ void	operation(DblLinkedList *stackA)
 	stackB = createDblLinkedList();
 
 	int	i = 0;
-	int test = 1;
+	int test = 8;
 	while (i < test)
 	{
 		tmp_head_A = stackA->head;
@@ -144,6 +144,18 @@ void	operation(DblLinkedList *stackA)
 
 			/********** Check next index in StackA  **********/
 			
+			if (i == test - 1)
+			{
+				ft_printf("%d\t", next_keep_in_stack);
+				ft_printf("%d\t", prev_keep_in_stack);
+				if (stackB->size > 0)
+					ft_printf("%d\t", tmp_head_B->data.index);
+				ft_printf("%d\t", tmp_head_A->data.index);
+				ft_printf("\n");
+				printDblLinkedList(stackA);
+				printDblLinkedList(stackB);
+			}
+			
 			tmp_head_A = stackA->head;
 			tmp_tail_A = stackA->tail;
 			tmp_head_B = stackB->head;
@@ -179,27 +191,26 @@ void	operation(DblLinkedList *stackA)
 							while (pos++ < stackA->size)
 								rra(&stackA);
 						ft_putstr_fd("List is sorted\n", 1);
-						printDblLinkedList(stackA);
+						//printDblLinkedList(stackA);
 						exit(EXIT_SUCCESS);
 					}
 					else
 					{
-						int	rotate = ft_abs((int)stackA->head->data.index, (int)stackB->head->data.index);
-						if (rotate > 1) {
-							if (rotate > (int) stackA->size / 2) {
-								while (rotate > 0) {
-									rra(&stackA);
-									rotate--;
-								}
-							} else {
-								while (rotate > 0) {
-									ra(&stackA);
-									rotate--;
-								}
-							}
-							tmp_head_B->data.keep_in_stack = 1;
-							pa(&stackA, &stackB);
+						tmp_head_A = stackA->head;
+						tmp_tail_A = stackA->tail;
+						tmp_head_B = stackB->head;
+						tmp_tail_B = stackB->tail;
+						size_t	tmp_how_many_operations;
+						size_t	how_many_operations = 1;
+						while (stackB->head->data.index > tmp_head_A->data.index)
+						{
+							how_many_operations++;
+							tmp_head_A = tmp_head_A->next;
 						}
+						tmp_how_many_operations = how_many_operations;
+						how_many_operations = 1;
+						while (stackB->tail->data.index < tmp_head_A->data.index)
+						
 					}
 				}
 			}
@@ -248,7 +259,8 @@ void	operation(DblLinkedList *stackA)
 					if (stackB->size > 1 && tmp_head_B->data.index < tmp_head_B->next->data.index)
 						ss(&stackA, &stackB);
 					else
-						sa(&stackA);
+						//sa(&stackA);
+						pb(&stackA, &stackB);
 				}
 				else
 					pb(&stackA, &stackB);

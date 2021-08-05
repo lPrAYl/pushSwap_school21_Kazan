@@ -232,7 +232,7 @@ t_best 	*find_best_sort_stack(DblLinkedList *stack)
 {
 	size_t	i;
 	size_t	lenght;
-	t_best	*subsequebce;
+	t_best	*subsequence;
 	t_best	*best_subsequence;
 	DblLinkedList	*tmp;
 	
@@ -241,32 +241,25 @@ t_best 	*find_best_sort_stack(DblLinkedList *stack)
 	tmp = stack;
 	while (i < stack->size)
 	{
-		subsequebce = LongestIncreasingSubsequence(tmp);
-		if (subsequebce->lenght > lenght)
+		subsequence = LongestIncreasingSubsequence(tmp);
+		if (subsequence->lenght > lenght)
 		{
-			lenght = subsequebce->lenght;
-			best_subsequence = subsequebce;
+			lenght = subsequence->lenght;
+			subsequence->iteration = i;
+			best_subsequence = subsequence;
+			//size_t j = best_subsequence[best_subsequence->lenght - 1].tailIndexes;
+//			printDblLinkedList(best_subsequence->stack);
+//			while ((int)j >= 0)
+//			{
+//				Node *current = getNthq(best_subsequence->stack, j);
+//				ft_printf("%d\t", current->data.value);
+//				j = best_subsequence[j].prevIndexes;
+//			}
+//			ft_printf("\n");
 		}
-		size_t j = best_subsequence[best_subsequence->lenght - 1].tailIndexes;
-		printDblLinkedList(subsequebce->stack);
-		while ((int)j >= 0)
-		{
-			Node *current = getNthq(best_subsequence->stack, j);
-			ft_printf("%d\t", current->data.value);
-			j = best_subsequence[j].prevIndexes;
-		}
-		ft_printf("\n");
 		ra(&tmp);
 		i++;
 	}
-	//size_t j = best_subsequence[best_subsequence->lenght - 1].tailIndexes;
-	//while ((int)j >= 0)
-	//{
-	//	Node *current = getNthq(best_subsequence->stack, j);
-	//	ft_printf("%d\t", current->data.value);
-	//	j = best_subsequence[j].prevIndexes;
-	//}
-	//ft_printf("\n%d\n", best_subsequence->lenght);
 	return (best_subsequence);
 }
 
@@ -277,6 +270,11 @@ void	markup_stack(DblLinkedList *stack)
 	Node	*current;
 	
 	best_stack = find_best_sort_stack(stack);
+	i = 0;
+	while (i < best_stack->iteration) {
+		ra(&stack);
+		i++;
+	}
 	i = best_stack[best_stack->lenght - 1].tailIndexes;
 	while ((int)i >= 0)
 	{
@@ -284,4 +282,10 @@ void	markup_stack(DblLinkedList *stack)
 		current->data.keep_in_stack = 1;
 		i = best_stack[i].prevIndexes;
 	}
+	i = 0;
+	while (i < best_stack->iteration) {
+		rra(&stack);
+		i++;
+	}
+	//printDblLinkedList(stack);
 }

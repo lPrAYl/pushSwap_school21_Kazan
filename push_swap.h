@@ -38,6 +38,7 @@ typedef struct	s_best
 	size_t 	tailIndexes;
 	size_t 	prevIndexes;
 	size_t	lenght;
+	size_t	iteration;
 	DblLinkedList *stack;
 }				t_best;
 
