@@ -72,7 +72,7 @@ void	operation(DblLinkedList *stackA)
 	stackB = createDblLinkedList();
 
 	int	i = 0;
-	int test = 116;
+	int test = 45;
 	while (i < test)
 	{
 		tmp_head_A = stackA->head;
@@ -193,7 +193,7 @@ void	operation(DblLinkedList *stackA)
 					else
 					{
 					    t_optOperations  count;
-					    size_t i = 0;
+					    size_t j = 0;
 					    Node *current;
 					    int RA;
 					    int RB;
@@ -204,21 +204,22 @@ void	operation(DblLinkedList *stackA)
 					    tmp_tail_A = stackA->tail;
 					    tmp_head_B = stackB->head;
 					    tmp_tail_B = stackB->tail;
-
-					    count.count = 2147483647;
+					    
 					    count = operation_init();
-					    while ((int)i <= (int)(stackB->size / 2))
+						count.count = 2147483647;
+					    while ((int)j < (int)(stackB->size / 2))
 					    {
-					        if (count.count < (int)i + 3)
+					        if (count.count < (int)j + 3)
 					            break;
 
 					        tmp_head_A = stackA->head;
 					        tmp_tail_A = stackA->tail;
 
 					        current = tmp_head_B;
-					        while (!((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
-					                || (current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
-					                || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index)))
+					        while (!(((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
+					        		|| (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index))
+					                || ((current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
+					                || (current->data.index > tmp_tail_A->data.index && tmp_head_A->data.index < tmp_tail_A->data.index))))
 					        {
 					            tmp_head_A = tmp_head_A->next;
 					            tmp_tail_A = tmp_tail_A->prev;
@@ -234,8 +235,8 @@ void	operation(DblLinkedList *stackA)
                                 RA = (int)tmp_tail_A->data.pos_in_stack;
                                 RRA = (int)(tmp_tail_A->data.pos_in_stack - stackA->size);
                             }
-					        RB = (int)i;
-					        RRB = (int)(i - stackB->size);
+					        RB = (int)j;
+					        RRB = (int)(j - stackB->size);
 
 					        int one = ft_max(RA, RB);
 					        int two = ft_max(-RRA, -RRB);
@@ -292,9 +293,10 @@ void	operation(DblLinkedList *stackA)
 					        tmp_tail_A = stackA->tail;
 
 					        current = tmp_tail_B;
-					        while (!((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
-					                || (current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
-					                || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index)))
+							while (!(((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
+									 || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index))
+									 || ((current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
+									 || (current->data.index > tmp_tail_A->data.index && tmp_head_A->data.index < tmp_tail_A->data.index))))
 					        {
 					            tmp_head_A = tmp_head_A->next;
 					            tmp_tail_A = tmp_tail_A->prev;
@@ -309,8 +311,8 @@ void	operation(DblLinkedList *stackA)
 					            RA = (int)tmp_head_A->data.pos_in_stack;
 					            RRA = (int)(tmp_tail_A->data.pos_in_stack - stackA->size);
 					        }
-					        RB = (int)stackB->size;
-					        RRB = -((int)i + 1);
+					        RB = (int)(stackB->size - j - 1);
+					        RRB = -((int)j + 1);
 
 					        one = ft_max(RA, RB);
 					        two = ft_max(-RRA, -RRB);
@@ -332,7 +334,7 @@ void	operation(DblLinkedList *stackA)
 					                count.rb = RB - RA;
 					            }
 					        }
-					        else if (two < count.count && two <= one && two <= three && two <= four)
+					        else if (two < count.count && two < one && two <= three && two <= four)
 					        {
 					            count = operation_init();
 					            count.count = two;
@@ -347,7 +349,7 @@ void	operation(DblLinkedList *stackA)
 					                count.rrb = -(RRB - RRA);
 					            }
 					        }
-					        else if (three < count.count && three <= one && three <= two && three <= four)
+					        else if (three < count.count && three < one && three < two && three <= four)
 					        {
 					            count = operation_init();
 					            count.count = three;
@@ -355,7 +357,7 @@ void	operation(DblLinkedList *stackA)
 					            count.rrb = -RRB;
 
 					        }
-					        else if (four < count.count && four <= one && four <= two && four <= three)
+					        else if (four < count.count && four < one && four < two && four <= three)
 					        {
 					            count = operation_init();
 					            count.count = four;
@@ -365,7 +367,7 @@ void	operation(DblLinkedList *stackA)
 
 					        tmp_head_B = tmp_head_B->next;
 					        tmp_tail_B = tmp_tail_B->prev;
-					        i++;
+					        j++;
 					    }
                         while (count.ra-- > 0)
                             ra(&stackA);
