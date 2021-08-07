@@ -48,6 +48,17 @@ typedef struct	Ring
 	Node	*current;
 }				Ring;
 
+typedef struct  s_optOperations
+{
+    int ra;
+    int rb;
+    int rra;
+    int rrb;
+    int rr;
+    int rrr;
+    int count;
+}               t_optOperations;
+
 DblLinkedList	*createDblLinkedList();
 void			deleteDblLinkedList(DblLinkedList **list);
 void			pushFront(DblLinkedList *list, struct s_data data);

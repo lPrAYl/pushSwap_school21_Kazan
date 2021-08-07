@@ -45,14 +45,10 @@ char	*ft_itoa_base(unsigned long nbr, t_printf *spec)
 	char	*str;
 
 	sign = 0;
-	if (nbr < 0)
-		sign = 1;
 	len_nbr = ft_len_nbr(nbr, sign, spec->base);
 	str = (char *)malloc(sizeof(char) * (len_nbr + 1));
 	if (!str)
 		return (NULL);
-	if (nbr < 0)
-		*(str + 0) = '-';
 	str[len_nbr] = '\0';
 	while (--len_nbr >= sign)
 	{
