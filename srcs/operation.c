@@ -72,7 +72,7 @@ void	operation(DblLinkedList *stackA)
 	stackB = createDblLinkedList();
 
 	int	i = 0;
-	int test = 45;
+	int test = 196;
 	while (i < test)
 	{
 		tmp_head_A = stackA->head;
@@ -187,7 +187,7 @@ void	operation(DblLinkedList *stackA)
 							while (pos++ < stackA->size)
 								ra(&stackA);
 						ft_putstr_fd("List is sorted\n", 1);
-						printDblLinkedList(stackA);
+						//printDblLinkedList(stackA);
 						exit(EXIT_SUCCESS);
 					}
 					else
@@ -207,7 +207,7 @@ void	operation(DblLinkedList *stackA)
 					    
 					    count = operation_init();
 						count.count = 2147483647;
-					    while ((int)j < (int)(stackB->size / 2))
+					    while ((int)j < (int)(stackB->size / 2 + 1))
 					    {
 					        if (count.count < (int)j + 3)
 					            break;
@@ -216,25 +216,35 @@ void	operation(DblLinkedList *stackA)
 					        tmp_tail_A = stackA->tail;
 
 					        current = tmp_head_B;
-					        while (!(((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
-					        		|| (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index))
-					                || ((current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
-					                || (current->data.index > tmp_tail_A->data.index && tmp_head_A->data.index < tmp_tail_A->data.index))))
-					        {
-					            tmp_head_A = tmp_head_A->next;
-					            tmp_tail_A = tmp_tail_A->prev;
-                            }
-					        if (tmp_head_A->data.pos_in_stack < stackA->size / 2 && ((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
-					            || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index)))
-                            {
-                                RA = (int)tmp_head_A->data.pos_in_stack + 1;
-                                RRA = (int)(tmp_head_A->data.pos_in_stack - stackA->size + 1);
-                            }
-                            else
-                            {
-                                RA = (int)tmp_tail_A->data.pos_in_stack;
-                                RRA = (int)(tmp_tail_A->data.pos_in_stack - stackA->size);
-                            }
+							if ((current->data.index < stackA->head->data.index && current->data.index > stackA->tail->data.index) || (current->data.index > stackA->tail->data.index && stackA->tail->data.index > stackA->head->data.index && current->data.index > stackA->head->data.index) || (current->data.index < stackA->head->data.index && stackA->head->data.index < stackA->tail->data.index))
+							{
+								RA = 0;
+								RRA = 0;
+							}
+							else
+							{
+								while (!(((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
+					        			|| (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index)
+					        			|| (current->data.index < tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index && tmp_head_A->data.index > tmp_head_A->next->data.index))
+					        	        || ((current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
+					        	        || (current->data.index > tmp_tail_A->data.index && tmp_tail_A->data.index < tmp_tail_A->prev->data.index && current->data.index > tmp_tail_A->prev->data.index)
+					        	        || (current->data.index < tmp_tail_A->data.index && tmp_tail_A->data.index < tmp_tail_A->prev->data.index))))
+					        	{
+					        	    tmp_head_A = tmp_head_A->next;
+					        	    tmp_tail_A = tmp_tail_A->prev;
+                            	}
+					        	if (tmp_head_A->data.pos_in_stack < stackA->size / 2 && ((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
+					        	    || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index) || (current->data.index < tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index && tmp_head_A->data.index > tmp_head_A->next->data.index)))
+                            	{
+                            	    RA = (int)tmp_head_A->data.pos_in_stack + 1;
+                            	    RRA = (int)(tmp_head_A->data.pos_in_stack - stackA->size + 1);
+                            	}
+                            	else
+                            	{
+                            	    RA = (int)tmp_tail_A->data.pos_in_stack;
+                            	    RRA = (int)(tmp_tail_A->data.pos_in_stack - stackA->size);
+                            	}
+							}
 					        RB = (int)j;
 					        RRB = (int)(j - stackB->size);
 
@@ -293,23 +303,36 @@ void	operation(DblLinkedList *stackA)
 					        tmp_tail_A = stackA->tail;
 
 					        current = tmp_tail_B;
-							while (!(((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
-									 || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index))
-									 || ((current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
-									 || (current->data.index > tmp_tail_A->data.index && tmp_head_A->data.index < tmp_tail_A->data.index))))
-					        {
-					            tmp_head_A = tmp_head_A->next;
-					            tmp_tail_A = tmp_tail_A->prev;
-					        }
-					        if (tmp_head_A->data.pos_in_stack < stackA->size / 2)
-					        {
-					            RA = (int)tmp_head_A->data.pos_in_stack + 1;
-					            RRA = (int)(tmp_head_A->data.pos_in_stack - stackA->size + 1);
-					        }
+					        if ((current->data.index < stackA->head->data.index && current->data.index > stackA->tail->data.index) ||
+					        	(current->data.index > stackA->tail->data.index && stackA->tail->data.index > stackA->head->data.index && current->data.index > stackA->head->data.index)
+					        	|| (current->data.index < stackA->head->data.index && stackA->head->data.index < stackA->tail->data.index))
+							{
+					        	RA = 0;
+					        	RRA = 0;
+							}
 					        else
-					        {
-					            RA = (int)tmp_head_A->data.pos_in_stack;
-					            RRA = (int)(tmp_tail_A->data.pos_in_stack - stackA->size);
+							{
+					        	while (!(((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
+									  || (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index)
+									  || (current->data.index < tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index && tmp_head_A->data.index > tmp_head_A->next->data.index))
+									  || ((current->data.index < tmp_tail_A->data.index && current->data.index > tmp_tail_A->prev->data.index)
+									  || (current->data.index > tmp_tail_A->data.index && tmp_tail_A->data.index < tmp_tail_A->prev->data.index && current->data.index > tmp_tail_A->prev->data.index)
+									  || (current->data.index < tmp_tail_A->data.index && tmp_tail_A->data.index < tmp_tail_A->prev->data.index))))
+					        	{
+					            	tmp_head_A = tmp_head_A->next;
+					            	tmp_tail_A = tmp_tail_A->prev;
+					        	}
+								if (tmp_head_A->data.pos_in_stack < stackA->size / 2 && ((current->data.index > tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index)
+								|| (current->data.index < tmp_head_A->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index) || (current->data.index < tmp_head_A->data.index && current->data.index < tmp_head_A->next->data.index && tmp_head_A->data.index > tmp_head_A->next->data.index)))
+					        	{
+					            	RA = (int)tmp_head_A->data.pos_in_stack + 1;
+					            	RRA = (int)(tmp_head_A->data.pos_in_stack - stackA->size + 1);
+					        	}
+					        	else
+					        	{
+					            	RA = (int)tmp_tail_A->data.pos_in_stack;
+					            	RRA = (int)(tmp_tail_A->data.pos_in_stack - stackA->size);
+					        	}
 					        }
 					        RB = (int)(stackB->size - j - 1);
 					        RRB = -((int)j + 1);

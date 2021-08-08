@@ -104,22 +104,6 @@ struct s_data	popBack(DblLinkedList *list)
 	return (tmp);
 }
 
-Node	*getNth(DblLinkedList *list, size_t index)
-{
-	Node	*tmp;
-	size_t	i;
-	
-	i = 0;
-	tmp = list->head;
-	while (tmp && i < index)
-	{
-		tmp = tmp->next;
-		i++;
-	}
-	return (tmp);
-}
-
-
 Node	*getNthq(DblLinkedList *list, size_t index)
 {
 	Node	*tmp;
@@ -157,7 +141,7 @@ void	insert(DblLinkedList *list, size_t index, struct s_data data)
 	
 	elm = NULL;
 	ins = NULL;
-	elm = getNth(list, index);
+	elm = getNthq(list, index);
 	if (elm == NULL)
 		exit(1);
 	ins = (Node*) malloc(sizeof(Node));
@@ -184,7 +168,7 @@ struct s_data	deleteNth(DblLinkedList *list, size_t index)
 	struct s_data	tmp;
 	
 	elm = NULL;
-	elm = getNth(list, index);
+	elm = getNthq(list, index);
 	if (elm == NULL)
 		exit(1);
 	if (elm->prev)
@@ -199,12 +183,6 @@ struct s_data	deleteNth(DblLinkedList *list, size_t index)
 	free(elm);
 	list->size--;
 	return (tmp);
-}
-
-
-void	printInt(struct s_data data)
-{
-	ft_printf("%d ", data.value);
 }
 
 void	printDblLinkedList(DblLinkedList *list)
@@ -226,63 +204,3 @@ void	printDblLinkedList(DblLinkedList *list)
 	}
 	ft_printf("\n");
 }
-
-
-//DblLinkedList	*fromArray(void *arr, size_t n, size_t size)
-//{
-//	DblLinkedList	*tmp;
-//	size_t			i;
-//
-//	tmp = NULL;
-//	i = 0;
-//	if (arr == NULL)
-//		exit(1);
-//	tmp = createDblLinkedList();
-//	while (i < n)
-//	{
-//
-//		pushBack(tmp, ((char*)arr + i * size));
-//		i++;
-//	}
-//	return (tmp);
-//}
-
-
-//int	main(void)
-//{
-//	DblLinkedList *list = createDblLinkedList();
-//	int a, b, c, d, e, f, g, h;
-//
-//	a = 10;
-//	b = 20;
-//	c = 30;
-//	d = 40;
-//	e = 50;
-//	f = 60;
-//	g = 70;
-//	h = 80;
-//	pushBack(list, &a);
-//	pushFront(list, &b);
-//	pushFront(list, &c);
-//	pushBack(list, &d);
-//	pushBack(list, &e);
-//	pushBack(list, &f);
-//	printDblLinkedList(list, printInt);
-//	ft_printf("length %d\n", list->size);
-//	ft_printf("nth 2 %d\n", *((int*)(getNthq(list, 2))->data));
-//	ft_printf("nth 5 %d\n", *((int*)(getNthq(list, 5))->data));
-//	ft_printf("popFront %d\n", *((int*)popFront(list)));
-//	ft_printf("popFront %d\n", *((int*)popFront(list)));
-//	ft_printf("head %d\n", *((int*)(list->head->data)));
-//	ft_printf("tail %d\n", *((int*)(list->tail->data)));
-//	ft_printf("popBack %d\n", *((int*)popBack(list)));
-//	ft_printf("popBack %d\n", *((int*)popBack(list)));
-//	ft_printf("length %d\n", list->size);
-//	printDblLinkedList(list, printInt);
-//	insert(list, 1, &g);
-//	printDblLinkedList(list, printInt);
-//	deleteNth(list, 0);
-//	printDblLinkedList(list, printInt);
-//	deleteDblLinkedList(&list);
-//}
-

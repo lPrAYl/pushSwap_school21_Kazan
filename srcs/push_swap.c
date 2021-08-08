@@ -15,12 +15,6 @@ int main(int argc, char **argv)
 		stackA = ft_validate_data(argv);
 		markup_stack(stackA);
 		operation(stackA);
-		//pb(&stackA, &stackB);
-		//pa(&stackA, &stackB);
-		//ra(&stackA);
-		//rra(&stackA);
-		//printDblLinkedList(stackA);
-		//printDblLinkedList(stackB);
 	}
 	else
 		ft_error("Not enough arguments\n");

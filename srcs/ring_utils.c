@@ -1,7 +1,5 @@
 #include "../push_swap.h"
 
-	//	создание кольцевого двусвязного списка
-
 Ring	*createRing()
 {
 	Ring	*tmp;
@@ -13,8 +11,6 @@ Ring	*createRing()
 	tmp->current = NULL;
 	return (tmp);
 }
-
-	//	добавление элементов в список
 
 void	addElem(Ring *ring, struct s_data data)
 {
@@ -40,8 +36,6 @@ void	addElem(Ring *ring, struct s_data data)
 	}
 	ring->size++;
 }
-
-	//	удаление элемента из списка и возвращение его значения
 
 struct s_data	removeElem(Ring *ring)
 {

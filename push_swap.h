@@ -59,6 +59,8 @@ typedef struct  s_optOperations
     int count;
 }               t_optOperations;
 
+/********************* Functions for a doubly linked list *********************/
+
 DblLinkedList	*createDblLinkedList();
 void			deleteDblLinkedList(DblLinkedList **list);
 void			pushFront(DblLinkedList *list, struct s_data data);
@@ -74,6 +76,15 @@ void			printDblLinkedList(DblLinkedList *list);
 DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
 
+void			check_dup_and_index(DblLinkedList *stack);
+DblLinkedList	*ft_validate_data(char **argv);
+void			markup_stack(DblLinkedList *stack);
+
+void			swap(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
+void			rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
+void			reverse_rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
+
+
 void			sa(DblLinkedList **stackA);
 void			sb(DblLinkedList **stackB);
 void			ss(DblLinkedList **stackA, DblLinkedList **stackB);
@@ -85,15 +96,6 @@ void			rr(DblLinkedList **stackA, DblLinkedList **stackB);
 void			rra(DblLinkedList **stackA);
 void			rrb(DblLinkedList **stackB);
 void			rrr(DblLinkedList **stackA, DblLinkedList **stackB);
-
-void 			ft_check_chunk(char *s);
-DblLinkedList	*ft_validate_data(char **argv);
-
-
-t_best 			*find_best_sort_stack(DblLinkedList *stack);
-void			markup_stack(DblLinkedList *stack);
-
-t_best 			*LongestIncreasingSubsequence(DblLinkedList *tmp);
 
 void			operation(DblLinkedList *stackA);
 
