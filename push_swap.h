@@ -48,7 +48,7 @@ typedef struct	Ring
 	Node	*current;
 }				Ring;
 
-typedef struct  s_optOperations
+typedef struct  s_optActions
 {
     int ra;
     int rb;
@@ -56,8 +56,8 @@ typedef struct  s_optOperations
     int rrb;
     int rr;
     int rrr;
-    int count;
-}               t_optOperations;
+    int total;
+}               t_optActions;
 
 /********************* Functions for a doubly linked list *********************/
 
@@ -76,9 +76,12 @@ void			printDblLinkedList(DblLinkedList *list);
 DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
 
+void			ft_error(char *s);
 void			check_dup_and_index(DblLinkedList *stack);
 DblLinkedList	*ft_validate_data(char **argv);
 void			markup_stack(DblLinkedList *stack);
+
+t_optActions	find_min_actions(DblLinkedList *stackA, DblLinkedList *stackB);
 
 void			swap(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
 void			rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
@@ -98,9 +101,5 @@ void			rrb(DblLinkedList **stackB);
 void			rrr(DblLinkedList **stackA, DblLinkedList **stackB);
 
 void			operation(DblLinkedList *stackA);
-
-int	ft_abc(int a, int b);
-
-void			ft_error(char *s);
 
 #endif
