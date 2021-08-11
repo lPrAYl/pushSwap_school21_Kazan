@@ -14,6 +14,7 @@ int main(int argc, char **argv)
 	{
 		stackA = ft_validate_data(argv);
 		markup_stack(stackA);
+		while (1);
 		operation(stackA);
 	}
 	else

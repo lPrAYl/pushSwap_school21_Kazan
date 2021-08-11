@@ -94,20 +94,27 @@ static t_best 	*find_best_sort_stack(DblLinkedList *stack)
 	i = 0;
 	lenght = 0;
 	tmp = stack;
-	while (i < stack->size)
+	int flag = 0;
+    while (i < stack->size)
 	{
-		subsequence = LongestIncreasingSubsequence(tmp);
-		if (subsequence->lenght > lenght)
+
+        subsequence = NULL;
+        subsequence = LongestIncreasingSubsequence(tmp);
+        if (subsequence->lenght > lenght)
 		{
-			lenght = subsequence->lenght;
-			subsequence->iteration = i;
-			best_subsequence = subsequence;
-		}
-		rotate(&tmp, NULL, 'a', 'n');
-		i++;
-	}
-	free(subsequence);
-	return (best_subsequence);
+            lenght = subsequence->lenght;
+            subsequence->iteration = i;
+            if (flag == 1) {
+                free(best_subsequence);
+            }
+            best_subsequence = subsequence;
+            flag = 1;
+        }
+        rotate(&tmp, NULL, 'a', 'n');
+        i++;
+    }
+    free(subsequence);
+    return (best_subsequence);
 }
 
 /*********************  Markup stack *********************/

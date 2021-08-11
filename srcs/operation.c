@@ -93,54 +93,49 @@ void	operation(DblLinkedList *stackA)
 	stackB = createDblLinkedList();
 
 	int	i = 0;
-	int test = 229;
+	int test = 10000;
+
 	while (i < test)
 	{
 		/********** find next/prev keep_in_stack element **********/
+		size_t size = stackA->size / 4;
 
 		find_markup_elem(stackA, stackA->head, &next_keep_in_stack, &prev_keep_in_stack);
+		//if (i == test - 1)
+		//{
+		//    ft_printf("%d\t", next_keep_in_stack);
+		//    ft_printf("%d\t", prev_keep_in_stack);
+		//    if (stackB->size > 0)
+		//        ft_printf("%d\t", stackB->head->data.index);
+		//    ft_printf("%d\t", stackA->head->data.index);
+		//    ft_printf("\n");
+		//    printDblLinkedList(stackA);
+		//    printDblLinkedList(stackB);
+		//}
 
-		if (i == test - 1)
-		{
-		    ft_printf("%d\t", next_keep_in_stack);
-		    ft_printf("%d\t", prev_keep_in_stack);
-		    if (stackB->size > 0)
-		        ft_printf("%d\t", stackB->head->data.index);
-		    ft_printf("%d\t", stackA->head->data.index);
-		    ft_printf("\n");
-		    printDblLinkedList(stackA);
-		    printDblLinkedList(stackB);
-		}
 		if (stackA->head->data.keep_in_stack == 1)
 		{
-		    if (stackB->size > 0)
-		    {
-		        actions = find_min_count_actions(stackA, stackB);
-		        if (actions.total < 3)
-		            do_actions(&stackA, &stackB, actions);
-		        else if (actions.total < (int)stackB->size / 2 && actions.rrr + actions.ra + actions.rra < 5)
-		            do_actions(&stackA, &stackB, actions);
-		    }
+
 		/********** Check next index in StackA  **********/
 
-			if (stackA->head->next->data.keep_in_stack == 1 && stackA->tail->data.keep_in_stack == 1)
+		    if (stackA->head->next->data.keep_in_stack == 1 && stackA->tail->data.keep_in_stack == 1)
 			{
 				direction = find_direction_to_rotate(stackA);
-				if (direction > 0)
+				if (direction > 0 || direction < 0)
 				{
 				    if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->head->data.index, stackB->head->next->data.index) > 0)
 						rotate(&stackA, &stackB, 's', 'w');
 				    else
 					    rotate(&stackA, &stackB, 'a', 'w');
 				}
-				else if (direction < 0)
-				{
-				    if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) < 0)
-                        reverse_rotate(&stackA, &stackB, 's', 'w');
-				    else
-					    reverse_rotate(&stackA, &stackB, 'a', 'w');
-				}
-				else
+				//else if (direction < 0)
+				//{
+				//    if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) < 0)
+                //        reverse_rotate(&stackA, &stackB, 's', 'w');
+				//    else
+				//	    reverse_rotate(&stackA, &stackB, 'a', 'w');
+				//}
+				else if (direction == 0)
 				{
 					if (stackB->size == 0)
 					{
@@ -151,9 +146,9 @@ void	operation(DblLinkedList *stackA)
 						else
 							while (pos++ < stackA->size)
 							    rotate(&stackA, &stackB, 'a', 'w');
-						ft_putstr_fd("List is sorted\n", 1);
-						printDblLinkedList(stackA);
-						printDblLinkedList(stackB);
+						//ft_putstr_fd("List is sorted\n", 1);
+						//printDblLinkedList(stackA);
+						//printDblLinkedList(stackB);
 						exit(EXIT_SUCCESS);
 					}
 					else
@@ -235,7 +230,10 @@ void	operation(DblLinkedList *stackA)
 		                swap(&stackA, &stackB, 'a', 'w');
 		        }
 		        else
+		        {
 		            push(&stackA, &stackB, 'b', 'w');
+		        }
+
 		    }
 		    else if (stackA->tail->data.keep_in_stack == 1)
 		    {
@@ -268,10 +266,15 @@ void	operation(DblLinkedList *stackA)
 		            }
 		        }
 		        else
+		        {
 		            push(&stackA, &stackB, 'b', 'w');
+		        }
 		    }
 		    else
-		        push(&stackA, &stackB, 'b', 'w');
+		        if (stackA->head->data.index < size)
+		            push(&stackA, &stackB, 'b', 'w');
+		        else
+                    rotate(&stackA, &stackB, 'a', 'w');
 		}
 		i++;
 	}

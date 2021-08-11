@@ -125,8 +125,7 @@ static void find_count_rotate_stackA(DblLinkedList *stack, Node *head_A, Node *h
 	currentA = head_A->data.index;
 	currentB = head_B->data.index;
 	*current_operations = init_operations();
-	if (!((currentB < currentA && currentB > prev_keep_in_stack) || (currentB > prev_keep_in_stack &&
-	   prev_keep_in_stack > currentA && currentB > currentA) || (currentB < currentA && currentA < prev_keep_in_stack)))
+	if (!check_indexA(currentB, prev_keep_in_stack, currentA))
 	{
 		while (!check_indexA(currentB, currentA, next_keep_in_stack) && head_A->next)
 		{
@@ -141,8 +140,6 @@ static void find_count_rotate_stackA(DblLinkedList *stack, Node *head_A, Node *h
 		(*current_operations).ra = (int)head_A->data.pos_in_stack + 1;
 		while (head_A->next->data.index != next_keep_in_stack && head_A->next)
 		    head_A = head_A->next;
-		//if (!head_A->next)
-		//    head_A = stack->head;
 		(*current_operations).rra = (int)head_A->data.pos_in_stack - stack->size + 1;
 	}
 }
