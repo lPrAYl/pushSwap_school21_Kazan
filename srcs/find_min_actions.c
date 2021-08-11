@@ -10,6 +10,7 @@ static t_optActions init_operations()
 	operations.rrb = 0;
 	operations.rr = 0;
 	operations.rrr = 0;
+	operations.total = 2147483647;
 	return (operations);
 }
 
@@ -73,28 +74,28 @@ static t_optActions	fill_case_four(t_optActions current_operations, int case_fou
 	return (operations);
 }
 
-static void	find_count_operations(t_optActions operations)
+static void	find_count_operations(t_optActions *operations)
 {
 	int				case_one;
 	int				case_two;
 	int				case_three;
 	int				case_four;
 	
-	case_one = ft_max(operations.ra, operations.rb);
-	case_two = ft_max(-operations.rra, -operations.rrb);
-	case_three = operations.ra - operations.rrb;
-	case_four = operations.rb - operations.rra;
-	if (case_one < operations.total && case_one <= case_two && case_one <= case_three && case_one <= case_four)
-		operations = fill_case_one(operations, case_one);
-	else if (case_two < operations.total && case_two < case_one && case_two <= case_three && case_two <= case_four)
-		operations = fill_case_two(operations, case_two);
-	else if (case_three < operations.total && case_three < case_one && case_three < case_two && case_three <= case_four)
-		operations = fill_case_three(operations, case_three);
-	else if (case_four < operations.total && case_four < case_one && case_four < case_two && case_four < case_three)
-		operations = fill_case_four(operations, case_four);
+	case_one = ft_max((*operations).ra, (*operations).rb);
+	case_two = ft_max(-(*operations).rra, -(*operations).rrb);
+	case_three = (*operations).ra - (*operations).rrb;
+	case_four = (*operations).rb - (*operations).rra;
+	if (case_one < (*operations).total && case_one <= case_two && case_one <= case_three && case_one <= case_four)
+		*operations = fill_case_one(*operations, case_one);
+	else if (case_two < (*operations).total && case_two < case_one && case_two <= case_three && case_two <= case_four)
+		*operations = fill_case_two(*operations, case_two);
+	else if (case_three < (*operations).total && case_three < case_one && case_three < case_two && case_three <= case_four)
+		*operations = fill_case_three(*operations, case_three);
+	else if (case_four < (*operations).total && case_four < case_one && case_four < case_two && case_four < case_three)
+		*operations = fill_case_four(*operations, case_four);
 }
 
-static void	find_markup_elem(DblLinkedList *stack, Node *head_A, size_t *next_keep_in_stack, size_t *prev_keep_in_stack)
+void	find_markup_elem(DblLinkedList *stack, Node *head_A, size_t *next_keep_in_stack, size_t *prev_keep_in_stack)
 {
 	Node	*tmp_next;
 	Node	*tmp_prev;
@@ -123,11 +124,11 @@ static void find_count_rotate_stackA(DblLinkedList *stack, Node *head_A, Node *h
 	find_markup_elem(stack, head_A, &next_keep_in_stack, &prev_keep_in_stack);
 	currentA = head_A->data.index;
 	currentB = head_B->data.index;
+	*current_operations = init_operations();
 	if (!((currentB < currentA && currentB > prev_keep_in_stack) || (currentB > prev_keep_in_stack &&
 	   prev_keep_in_stack > currentA && currentB > currentA) || (currentB < currentA && currentA < prev_keep_in_stack)))
 	{
-		while (!(((currentB > currentA && currentB < next_keep_in_stack) || (currentB < next_keep_in_stack &&
-			next_keep_in_stack < currentA) || (currentB > currentA && currentA > next_keep_in_stack))) && head_A->next)
+		while (!check_indexA(currentB, currentA, next_keep_in_stack) && head_A->next)
 		{
 			head_A = head_A->next;
 			if (head_A->data.keep_in_stack == 1)
@@ -138,21 +139,26 @@ static void find_count_rotate_stackA(DblLinkedList *stack, Node *head_A, Node *h
 			}
 		}
 		(*current_operations).ra = (int)head_A->data.pos_in_stack + 1;
+		while (head_A->next->data.index != next_keep_in_stack && head_A->next)
+		    head_A = head_A->next;
+		//if (!head_A->next)
+		//    head_A = stack->head;
 		(*current_operations).rra = (int)head_A->data.pos_in_stack - stack->size + 1;
 	}
 }
 
-t_optActions	find_min_actions(DblLinkedList *stackA, DblLinkedList *stackB)
+t_optActions	find_min_count_actions(DblLinkedList *stackA, DblLinkedList *stackB)
 {
 	size_t			i;
 	t_optActions	operations;
 	t_optActions	current_operations;
 	Node			*tmp_head_A;
 	Node			*tmp_head_B;
-	
-	current_operations = init_operations();
-	operations.total = 2147483647;
-	tmp_head_B = stackB->head;
+
+    tmp_head_B = stackB->head;
+    current_operations = init_operations();
+
+    operations.total = 2147483647;
 	i = 0;
 	while ((int)i < (int)stackB->size)
 	{
@@ -160,7 +166,7 @@ t_optActions	find_min_actions(DblLinkedList *stackA, DblLinkedList *stackB)
 		find_count_rotate_stackA(stackA, tmp_head_A, tmp_head_B, &current_operations);
 		current_operations.rb = (int)i;
 		current_operations.rrb = (int)(i - stackB->size);
-		find_count_operations(current_operations);
+		find_count_operations(&current_operations);
 		if (current_operations.total < operations.total)
 			operations = current_operations;
 		tmp_head_B = tmp_head_B->next;

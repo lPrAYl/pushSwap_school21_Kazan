@@ -1,5 +1,33 @@
 #include "../push_swap.h"
 
+int ft_abs(int numb)
+{
+    if (numb < 0)
+        numb = -numb;
+    return (numb);
+}
+
+int check_indexA(size_t index, size_t prev, size_t next)
+{
+    if (index > prev && index < next)
+        return (1);
+    else if (index < next && index < prev && prev > next)
+        return (1);
+    else if (index > next && index > prev && prev > next)
+        return (1);
+    return (0);
+}
+
+int check_indexB(size_t target, size_t index_one, size_t index_two)
+{
+    int step_to_index_one;
+    int step_to_index_two;
+
+    step_to_index_one = ft_abs((int)(index_one - target));
+    step_to_index_two = ft_abs((int)(index_two - target));
+    return (step_to_index_one - step_to_index_two);
+}
+
 static int	find_direction_to_rotate(DblLinkedList *stack)
 {
 	Node 	*tmp;
@@ -30,252 +58,222 @@ static int	find_direction_to_rotate(DblLinkedList *stack)
 	return (direction);
 }
 
+static void do_actions(DblLinkedList **stackA, DblLinkedList **stackB, t_optActions actions)
+{
+    while (actions.ra-- > 0)
+        rotate(stackA, stackB, 'a', 'w');
+    while (actions.rb-- > 0)
+        rotate(stackA, stackB, 'b', 'w');
+    while (actions.rra-- > 0)
+        reverse_rotate(stackA, stackB, 'a', 'w');
+    while (actions.rrb-- > 0)
+        reverse_rotate(stackA, stackB, 'b', 'w');
+    while (actions.rr-- > 0)
+        rotate(stackA, stackB, 's', 'w');
+    while (actions.rrr-- > 0)
+        reverse_rotate(stackA, stackB, 's', 'w');
+    if ((*stackB)->size > 0)
+    {
+        (*stackB)->head->data.keep_in_stack = 1;
+        push(stackA, stackB, 'a','w');
+    }
+}
+
 void	operation(DblLinkedList *stackA)
 {
 	DblLinkedList	*stackB;
-	Node			*tmp_head_A;
-	Node 			*tmp_tail_A;
-	Node			*tmp_head_B;
-	Node 			*tmp_tail_B;
-	Node			*tmp_next;
+	Node            *tmp_next;
 	Node			*tmp_prev;
 	size_t			next_keep_in_stack;
 	size_t			prev_keep_in_stack;
 	int 			direction;
-	t_optActions	operations;
+	t_optActions	actions;
 
 
 	stackB = createDblLinkedList();
 
 	int	i = 0;
-	int test = 190;
+	int test = 229;
 	while (i < test)
 	{
-		tmp_head_A = stackA->head;
-		tmp_tail_A = stackA->tail;
-		tmp_head_B = stackB->head;
-		tmp_tail_B = stackB->tail;
-
 		/********** find next/prev keep_in_stack element **********/
 
-		tmp_next = tmp_head_A->next;
-		while (tmp_next->data.keep_in_stack != 1) {
-			tmp_next = tmp_next->next;
-		}
-		next_keep_in_stack = tmp_next->data.index;
-
-		tmp_prev = tmp_tail_A;
-		while (tmp_prev->data.keep_in_stack != 1) {
-			tmp_prev = tmp_prev->prev;
-		}
-		prev_keep_in_stack = tmp_prev->data.index;
-
+		find_markup_elem(stackA, stackA->head, &next_keep_in_stack, &prev_keep_in_stack);
 
 		if (i == test - 1)
 		{
-			ft_printf("%d\t", next_keep_in_stack);
-			ft_printf("%d\t", prev_keep_in_stack);
-			if (stackB->size > 0)
-				ft_printf("%d\t", tmp_head_B->data.index);
-			ft_printf("%d\t", tmp_head_A->data.index);
-			ft_printf("\n");
-			printDblLinkedList(stackA);
-			printDblLinkedList(stackB);
+		    ft_printf("%d\t", next_keep_in_stack);
+		    ft_printf("%d\t", prev_keep_in_stack);
+		    if (stackB->size > 0)
+		        ft_printf("%d\t", stackB->head->data.index);
+		    ft_printf("%d\t", stackA->head->data.index);
+		    ft_printf("\n");
+		    printDblLinkedList(stackA);
+		    printDblLinkedList(stackB);
 		}
-
-		if (tmp_head_A->data.keep_in_stack == 1)
+		if (stackA->head->data.keep_in_stack == 1)
 		{
-			/********** check current, next and previous index in StackB **********/
+		    if (stackB->size > 0)
+		    {
+		        actions = find_min_count_actions(stackA, stackB);
+		        if (actions.total < 3)
+		            do_actions(&stackA, &stackB, actions);
+		        else if (actions.total < (int)stackB->size / 2 && actions.rrr + actions.ra + actions.rra < 5)
+		            do_actions(&stackA, &stackB, actions);
+		    }
+		/********** Check next index in StackA  **********/
 
-			if (stackB->size > 0 && tmp_head_B->data.index > tmp_head_A->data.index &&
-				(tmp_head_B->data.index < next_keep_in_stack || next_keep_in_stack < tmp_head_A->data.index))
-			{
-				tmp_head_B->data.keep_in_stack = 1;
-				ra(&stackA);
-				pa(&stackA, &stackB);
-			}
-			else if	(stackB->size > 0 && tmp_head_B->data.index < tmp_head_A->data.index &&
-					(tmp_head_B->data.index > prev_keep_in_stack || prev_keep_in_stack > tmp_head_A->data.index))
-			{
-				tmp_head_B->data.keep_in_stack = 1;
-				pa(&stackA, &stackB);
-			}
-			else if (stackB->size > 1 && tmp_head_B->next->data.index > tmp_head_A->data.index &&
-					(tmp_head_B->next->data.index < next_keep_in_stack || next_keep_in_stack < tmp_head_A->data.index))
-			{
-				tmp_head_B->next->data.keep_in_stack = 1;
-				rr(&stackA, &stackB);
-				pa(&stackA, &stackB);
-			}
-			else if (stackB->size > 1 && tmp_head_B->next->data.index < tmp_head_A->data.index &&
-					(tmp_head_B->next->data.index > prev_keep_in_stack || prev_keep_in_stack > tmp_head_A->data.index))
-			{
-				tmp_head_B->next->data.keep_in_stack = 1;
-				rb(&stackB);
-				pa(&stackA, &stackB);
-			}
-			else if (stackB->size > 2 && tmp_tail_B->data.index > tmp_head_A->data.index &&
-					(tmp_tail_B->data.index < next_keep_in_stack || next_keep_in_stack < tmp_head_A->data.index))
-			{
-				tmp_tail_B->data.keep_in_stack = 1;
-				ra(&stackA);
-				rrb(&stackB);
-				pa(&stackA, &stackB);
-			}
-			else if (stackB->size > 2 && tmp_tail_B->data.index < tmp_head_A->data.index &&
-					(tmp_tail_B->data.index > prev_keep_in_stack || prev_keep_in_stack > tmp_head_A->data.index))
-			{
-				tmp_tail_B->data.keep_in_stack = 1;
-				rrb(&stackB);
-				pa(&stackA, &stackB);
-			}
-			//printDblLinkedList(stackA);
-
-			/********** Check next index in StackA  **********/
-
-			else if (tmp_head_A->next->data.keep_in_stack == 1 && tmp_tail_A->data.keep_in_stack == 1)
+			if (stackA->head->next->data.keep_in_stack == 1 && stackA->tail->data.keep_in_stack == 1)
 			{
 				direction = find_direction_to_rotate(stackA);
-				//ft_printf("%d\n", direction);
 				if (direction > 0)
 				{
-					if (stackB->size > 1 && stackB->head->data.index < stackB->tail->data.index)
-						rr(&stackA, &stackB);
-					else
-						ra(&stackA);
+				    if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->head->data.index, stackB->head->next->data.index) > 0)
+						rotate(&stackA, &stackB, 's', 'w');
+				    else
+					    rotate(&stackA, &stackB, 'a', 'w');
 				}
-				else if (direction < 0 || stackA->tail->data.keep_in_stack == 0)
+				else if (direction < 0)
 				{
-					if (stackB->size > 1 && stackB->head->data.index < stackB->tail->data.index)
-						rrr(&stackA, &stackB);
-					else
-						rra(&stackA);
+				    if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) < 0)
+                        reverse_rotate(&stackA, &stackB, 's', 'w');
+				    else
+					    reverse_rotate(&stackA, &stackB, 'a', 'w');
 				}
 				else
 				{
 					if (stackB->size == 0)
 					{
 						size_t pos = stackA->head->data.index;
-						if (pos < stackA->size / 2)
+						if (pos < stackA->size / 2 + 1)
 							while (pos--)
-								rra(&stackA);
-						else if (pos >= stackA->size / 2)
+							    reverse_rotate(&stackA, &stackB, 'a', 'w');
+						else
 							while (pos++ < stackA->size)
-								ra(&stackA);
+							    rotate(&stackA, &stackB, 'a', 'w');
 						ft_putstr_fd("List is sorted\n", 1);
-						//printDblLinkedList(stackA);
+						printDblLinkedList(stackA);
+						printDblLinkedList(stackB);
 						exit(EXIT_SUCCESS);
 					}
 					else
 					{
-						operations = find_min_actions(stackA, stackB);
-                        while (operations.ra-- > 0)
-                            ra(&stackA);
-                        while (operations.rb-- > 0)
-                            rb(&stackB);
-                        while (operations.rra-- > 0)
-                            rra(&stackA);
-                        while (operations.rrb-- > 0)
-                            rrb(&stackB);
-                        while (operations.rr-- > 0)
-                            rr(&stackA, &stackB);
-                        while (operations.rrr-- > 0)
-                            rrr(&stackA, &stackB);
-                        stackB->head->data.keep_in_stack = 1;
-                        pa(&stackA, &stackB);
+						actions = find_min_count_actions(stackA, stackB);
+						do_actions(&stackA, &stackB, actions);
 					}
 				}
 			}
-			else if (tmp_head_A->next->data.keep_in_stack == 0 || tmp_tail_A->data.keep_in_stack == 0)
+			else if (stackA->head->next->data.keep_in_stack == 0 || stackA->tail->data.keep_in_stack == 0)
 			{
-				//printDblLinkedList(stackA);
-				if (tmp_head_A->next->data.keep_in_stack == 0 && tmp_head_A->next->data.index < tmp_head_A->data.index && tmp_head_A->next->data.index > prev_keep_in_stack)
+				if (stackA->head->next->data.keep_in_stack == 0 &&
+				            check_indexA(stackA->head->next->data.index, prev_keep_in_stack, stackA->head->data.index))
 				{
-					tmp_head_A->next->data.keep_in_stack = 1;
-					if (stackB->size > 1 && tmp_head_B->data.index < tmp_head_B->next->data.index)
-						ss(&stackA, &stackB);
+					stackA->head->next->data.keep_in_stack = 1;
+					if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->head->data.index, stackB->head->next->data.index) > 0)
+						swap(&stackA, &stackB, 's', 'w');
 					else
-						sa(&stackA);
+					    swap(&stackA, &stackB, 'a', 'w');
 				}
-				else if (tmp_tail_A->data.keep_in_stack == 0 && tmp_tail_A->data.index > tmp_head_A->data.index && tmp_tail_A->data.index < next_keep_in_stack)
+				else if (stackA->tail->data.keep_in_stack == 0 &&
+				                check_indexA(stackA->tail->data.index, stackA->head->data.index, next_keep_in_stack))
 				{
-				    tmp_tail_A->data.keep_in_stack = 1;
-				    if (stackB->size > 2 && tmp_tail_B->data.index < tmp_head_B->data.index && tmp_tail_B->data.index > tmp_head_B->next->data.index)
+				    stackA->tail->data.keep_in_stack = 1;
+				    if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) > 0 &&
+				            check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->next->data.index) < 0)
 				    {
-				        rrr(&stackA, &stackB);
-				        ss(&stackA, &stackB);
+				        reverse_rotate(&stackA, &stackB, 's', 'w');
+				        swap(&stackA, &stackB, 's', 'w');
 				    }
-				    else if (stackB->size > 1 && tmp_tail_B->data.index > tmp_head_B->data.index)
+				    else if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) < 0)
 				    {
-				        rrr(&stackA, &stackB);
-				        sa(&stackA);
+				        reverse_rotate(&stackA, &stackB, 's', 'w');
+				        swap(&stackA, &stackB, 'a', 'w');
 				    }
-
-				    else if (stackB->size > 2 && tmp_head_B->data.index < tmp_head_B->next->data.index)
+				    else if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->head->data.index, stackB->head->next->data.index) < 0)
 				    {
-				        rra(&stackA);
-				        ss(&stackA, &stackB);
+				        reverse_rotate(&stackA, &stackB, 'a', 'w');
+				        swap(&stackA, &stackB, 's', 'w');
 				    }
 				    else
 				    {
-				        rra(&stackA);
-				        sa(&stackA);
+				        reverse_rotate(&stackA, &stackB, 'a', 'w');
+				        swap(&stackA, &stackB, 'a', 'w');
 				    }
 				}
 				else
-				{
-					if (stackB->size > 1 && tmp_head_B->data.index < tmp_head_B->next->data.index && tmp_head_A->next->data.index < tmp_head_A->data.index)
-						ss(&stackA, &stackB);
-					else if (tmp_head_A->next->data.keep_in_stack == 0)
-						ra(&stackA);
-					else
-					    rra(&stackA);
-					pb(&stackA, &stackB);
-				}
-				//printDblLinkedList(stackA);
+				    if (stackA->head->next->data.keep_in_stack == 0)
+				    {
+				        if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->head->data.index, stackB->head->next->data.index) > 0)
+				            rotate(&stackA, &stackB, 's', 'w');
+				        else
+				            rotate(&stackA, &stackB, 'a', 'w');
+				    }
+				    else
+				    {
+				        if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) < 0)
+				            reverse_rotate(&stackA, &stackB, 's', 'w');
+				        else
+                            reverse_rotate(&stackA, &stackB, 'a', 'w');
+				    }
+
 			}
 		}
 		else	/********** Check index in StackA if keep_in_stack = 0 **********/
 		{
-		    if (tmp_tail_A->data.keep_in_stack == 1)
+		    if (stackA->head->next->data.keep_in_stack == 1)
 		    {
-		        tmp_prev = tmp_tail_A->prev;
-		        while (tmp_prev->data.keep_in_stack != 1) {
-		            tmp_prev = tmp_prev->prev;
+		        tmp_next = stackA->head->next->next;
+		        while (tmp_next->data.keep_in_stack != 1)
+		            tmp_next = tmp_next->next;
+		        next_keep_in_stack = tmp_next->data.index;
+		        if (check_indexA(stackA->head->data.index, stackA->head->next->data.index, next_keep_in_stack))
+		        {
+		            stackA->head->data.keep_in_stack = 1;
+		            if (stackB->size > 1 && check_indexB(stackA->head->next->data.index, stackB->head->data.index, stackB->head->next->data.index) < 0)
+		                swap(&stackA, &stackB, 's', 'w');
+		            else
+		                swap(&stackA, &stackB, 'a', 'w');
 		        }
-		        prev_keep_in_stack = tmp_prev->data.index;
+		        else
+		            push(&stackA, &stackB, 'b', 'w');
 		    }
-		    if (tmp_head_A->data.index < tmp_tail_A->data.index && tmp_tail_A->data.keep_in_stack == 1 && tmp_head_A->data.index > prev_keep_in_stack)
+		    else if (stackA->tail->data.keep_in_stack == 1)
 		    {
-                tmp_head_A->data.keep_in_stack = 1;
-                rra(&stackA);
-                sa(&stackA);
+		        tmp_prev = stackA->tail->prev;
+		        while (tmp_prev->data.keep_in_stack != 1)
+		            tmp_prev = tmp_prev->prev;
+		        prev_keep_in_stack = tmp_prev->data.index;
+		        if (check_indexA(stackA->head->data.index, prev_keep_in_stack, stackA->tail->data.index))
+		        {
+		            if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) > 0 &&
+		            check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->next->data.index) < 0)
+		            {
+		                reverse_rotate(&stackA, &stackB, 's', 'w');
+		                swap(&stackA, &stackB, 's', 'w');
+		            }
+		            else if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->tail->data.index, stackB->head->data.index) < 0)
+		            {
+		                reverse_rotate(&stackA, &stackB, 's', 'w');
+		                swap(&stackA, &stackB, 'a', 'w');
+		            }
+		            else if (stackB->size > 1 && check_indexB(stackA->head->data.index, stackB->head->data.index, stackB->head->next->data.index) < 0)
+		            {
+		                reverse_rotate(&stackA, &stackB, 'a', 'w');
+		                swap(&stackA, &stackB, 's', 'w');
+		            }
+		            else
+		            {
+		                reverse_rotate(&stackA, &stackB, 'a', 'w');
+		                swap(&stackA, &stackB, 'a', 'w');
+		            }
+		        }
+		        else
+		            push(&stackA, &stackB, 'b', 'w');
 		    }
-			else if (tmp_head_A->data.index > tmp_head_A->next->data.index)
-			{
-				if (tmp_head_A->next->data.keep_in_stack == 1 && (tmp_head_A->data.index < next_keep_in_stack
-					|| next_keep_in_stack < tmp_head_A->next->data.index))
-				{
-					tmp_head_A->data.keep_in_stack = 1;
-					if (stackB->size > 1 && tmp_head_B->data.index < tmp_head_B->next->data.index)
-						ss(&stackA, &stackB);
-					else
-						sa(&stackA);
-				}
-				else if (tmp_head_A->next->data.keep_in_stack == 0)
-				{
-					if (stackB->size > 1 && tmp_head_B->data.index < tmp_head_B->next->data.index)
-						ss(&stackA, &stackB);
-					else
-						//sa(&stackA);
-						pb(&stackA, &stackB);
-				}
-				else
-					pb(&stackA, &stackB);
-			}
-			else
-				pb(&stackA, &stackB);
+		    else
+		        push(&stackA, &stackB, 'b', 'w');
 		}
 		i++;
 	}
 }
+

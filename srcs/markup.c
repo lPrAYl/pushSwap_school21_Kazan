@@ -110,7 +110,7 @@ static t_best 	*find_best_sort_stack(DblLinkedList *stack)
 	return (best_subsequence);
 }
 
-/********************* Stack markup *********************/
+/*********************  Markup stack *********************/
 
 void	markup_stack(DblLinkedList *stack)
 {

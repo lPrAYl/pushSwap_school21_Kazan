@@ -77,15 +77,18 @@ DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
 
 
 void			ft_error(char *s);
+void	        find_markup_elem(DblLinkedList *stack, Node *head_A, size_t *next_keep_in_stack, size_t *prev_keep_in_stack);
 void			check_dup_and_index(DblLinkedList *stack);
 DblLinkedList	*ft_validate_data(char **argv);
 void			markup_stack(DblLinkedList *stack);
 
-t_optActions	find_min_actions(DblLinkedList *stackA, DblLinkedList *stackB);
+t_optActions	find_min_count_actions(DblLinkedList *stackA, DblLinkedList *stackB);
+int             check_indexA(size_t index, size_t prev, size_t next);
 
 void			swap(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
 void			rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
 void			reverse_rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
+void	        push(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
 
 
 void			sa(DblLinkedList **stackA);
