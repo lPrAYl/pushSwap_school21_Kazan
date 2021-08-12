@@ -5,9 +5,10 @@ CC				=	gcc
 FLAGS			=	-Wall -Wextra -Werror -g
 
 SOURCES			=	push_swap.c		validation.c	indexing.c	markup.c 	find_min_actions.c	actions/swap.c	\
-					actions/push.c	actions/rotate.c	\
-					actions/reverse_rotate.c	operation.c	operations_utils.c	dbl_linked_list_utils.c\
-					ring_utils.c
+					find_min_actions_utils.c actions/push.c	actions/rotate.c	\
+					actions/reverse_rotate.c	operation.c	\
+					list_utils.c	list_utils2.c search_subsequence.c\
+			
 
 SRCDIR			=	./srcs/
 

@@ -1,74 +1,84 @@
 #include "../push_swap.h"
 
-/********************* Initializing elements for comparison *********************/
+/**************** Initializing elements for comparison ****************/
 
-static t_compare	init_sort_data(Node *current_i, size_t i)
+static t_compare	init_sort_data(t_Node *cur_i, size_t i)
 {
 	struct s_compare	sort;
-	
+
 	sort.pos_min = i;
-	sort.min = current_i->data.value;
+	sort.min = cur_i->data.value;
 	sort.pos_max = i;
-	sort.max = current_i->data.value;
+	sort.max = cur_i->data.value;
 	return (sort);
 }
 
-/********************* Sorting and checking for duplicates *********************/
+/**************** Sorting and checking for duplicates ****************/
 
-static t_compare	comparison(DblLinkedList **stack, Node *current_i, size_t i)
+static t_compare	comparison(t_List **stk, t_Node *cur_i, size_t i)
 {
 	size_t		j;
 	t_compare	sort;
-	Node 		*current_j;
-	
-	sort = init_sort_data(current_i, i);
+	t_Node		*cur_j;
+
+	sort = init_sort_data(cur_i, i);
 	j = i + 1;
-	while (j < (*stack)->size)
+	while (j < (*stk)->size)
 	{
-		current_j = getNthq(*stack, j);
-		if (current_j->data.value < sort.min && (int)current_j->data.index == -1)
+		cur_j = getNthq(*stk, j);
+		if (cur_j->data.value < sort.min && (int)cur_j->data.index == -1)
 		{
-			sort.min = current_j->data.value;
+			sort.min = cur_j->data.value;
 			sort.pos_min = j;
 		}
-		else if (current_j->data.value > sort.max && (int)current_j->data.index == -1)
+		else if (cur_j->data.value > sort.max && (int)cur_j->data.index == -1)
 		{
-			sort.max = current_j->data.value;
+			sort.max = cur_j->data.value;
 			sort.pos_max = j;
 		}
-		else if (current_j->data.value == sort.min || current_j->data.value == sort.max)
+		else if (cur_j->data.value == sort.min || cur_j->data.value == sort.max)
 			ft_error("Duplicate number\n");
 		j++;
 	}
 	return (sort);
 }
 
+static void	check_sorting(t_List *stk)
+{
+	t_Node	*tmp;
+
+	tmp = stk->head;
+	while (tmp->next && tmp->next->data.index > tmp->data.index)
+		tmp = tmp->next;
+	if (tmp->data.index == stk->tail->data.index)
+		ft_error("List is sorted\n");
+}
+
 /********************* Arrangement of indices *********************/
 
-void	check_dup_and_index(DblLinkedList *stack)
+void	check_dup_and_index(t_List *stk, size_t index)
 {
 	size_t		i;
 	size_t		j;
-	size_t 		index;
-	Node		*current_i;
-	Node 		*current_j;
+	t_Node		*cur_i;
+	t_Node		*cur_j;
 	t_compare	sort;
-	
+
 	i = 0;
-	index = 0;
-	j = stack->size - 1;
-	while (i < stack->size)
+	j = stk->size - 1;
+	while (i < stk->size)
 	{
-		current_i = getNthq(stack, i);
-		current_i->data.pos_in_stack = i;
-		while ((int)current_i->data.index == -1)
+		cur_i = getNthq(stk, i);
+		cur_i->data.pos_in_stk = i;
+		while ((int)cur_i->data.index == -1)
 		{
-			sort = comparison(&stack, current_i, i);
-			current_j = getNthq(stack, sort.pos_min);
-			current_j->data.index = index++;
-			current_j = getNthq(stack, sort.pos_max);
-			current_j->data.index = j--;
+			sort = comparison(&stk, cur_i, i);
+			cur_j = getNthq(stk, sort.pos_min);
+			cur_j->data.index = index++;
+			cur_j = getNthq(stk, sort.pos_max);
+			cur_j->data.index = j--;
 		}
 		i++;
 	}
+	check_sorting(stk);
 }

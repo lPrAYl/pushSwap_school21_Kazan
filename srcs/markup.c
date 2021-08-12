@@ -1,149 +1,87 @@
 #include "../push_swap.h"
 
-/********************* Getting the ceiling index *********************/
+/********************* Subseq initialization *********************/
 
-static size_t	GetCeilIndex(DblLinkedList *tmp, t_best *subsequnce, size_t key)
-{
-	int		left;
-	int 	right;
-	int		middle;
-	Node 	*current;
-	
-	left = -1;
-	right = (int)subsequnce->lenght - 1;
-	while (right - left > 1)
-	{
-		middle = left + (right - left) / 2;
-		current = getNthq(tmp, subsequnce[middle].tailIndexes);
-		if (current->data.index >= key)
-			right = middle;
-		else
-			left = middle;
-	}
-	return (right);
-}
-
-/********************* Subsequence initialization *********************/
-
-static t_best	*init_subsequence(DblLinkedList *stack)
+static void	init_subseq(t_List *stk, t_best **subseq)
 {
 	size_t	i;
-	t_best	*subsequence;
-	
-	subsequence = malloc(sizeof(t_best) * (stack->size + 1));
-	if (!subsequence)
-		ft_error("Malloc error\n");
+
 	i = 0;
-	while (i < stack->size + 1)
+	while (i < stk->size + 1)
 	{
-		subsequence[i].tailIndexes = 0;
-		subsequence[i].prevIndexes = -1;
+		(*subseq)[i].tailInd = 0;
+		(*subseq)[i].prevInd = -1;
 		i++;
 	}
-	subsequence->lenght = 1;
-	subsequence->stack = stack;
-	return (subsequence);
+	(*subseq)->lenght = 1;
+	(*subseq)->stk = stk;
 }
 
-/********************* Search for the longest increasing subsequence *********************/
+/************* Search for the longest increasing subsequence *************/
 
-static t_best 	*LongestIncreasingSubsequence(DblLinkedList *stack)
+static void	LongestIncreasingSubseq(t_List *stk, t_best **subseq)
 {
-	size_t 	i;
-	size_t	position;
-	t_best	*subsequence;
-	Node	*current;
-	
+	size_t	i;
+	t_Node	*cur;	
+
 	i = 1;
-	subsequence = init_subsequence(stack);
-	current = stack->head;
-	while (i < stack->size)
+	init_subseq(stk, subseq);
+	cur = stk->head;
+	while (i < stk->size)
 	{
-		current = current->next;
-		Node *current_begin = getNthq(stack, subsequence[0].tailIndexes);
-		Node *current_back = getNthq(stack, subsequence[subsequence->lenght - 1].tailIndexes);
-		if (current->data.index < current_begin->data.index)
-			subsequence[0].tailIndexes = i;
-		else if (current->data.index > current_back->data.index)
-		{
-			subsequence[i].prevIndexes = subsequence[subsequence->lenght - 1].tailIndexes;
-			subsequence[subsequence->lenght].tailIndexes = i;
-			subsequence->lenght++;
-		}
-		else
-		{
-			position = GetCeilIndex(stack, subsequence, current->data.index);
-			subsequence[i].prevIndexes = subsequence[position - 1].tailIndexes;
-			subsequence[position].tailIndexes = i;
-		}
+		cur = cur->next;
+		incrSubseq(stk, subseq, cur, i);
 		i++;
 	}
-	return (subsequence);
 }
+/**************** Finding the maximum number of sorted items ****************/
 
-/********************* Finding the maximum number of sorted items *********************/
-
-static t_best 	*find_best_sort_stack(DblLinkedList *stack)
+static void	find_best_sort_stk(t_List *stk, t_best **best_stk)
 {
 	size_t	i;
-	size_t	lenght;
-	t_best	*subsequence;
-	t_best	*best_subsequence;
-	DblLinkedList	*tmp;
-	
-	i = 0;
-	lenght = 0;
-	tmp = stack;
-	int flag = 0;
-    while (i < stack->size)
-	{
+	t_best	*subseq;
+	t_List	*tmp;
 
-        subsequence = NULL;
-        subsequence = LongestIncreasingSubsequence(tmp);
-        if (subsequence->lenght > lenght)
+	i = 0;
+	tmp = stk;
+	init_subseq(tmp, best_stk);
+	subseq = *best_stk;
+	while (i++ < stk->size)
+	{
+		LongestIncreasingSubseq(tmp, &subseq);
+		if (subseq->lenght > (*best_stk)->lenght)
 		{
-            lenght = subsequence->lenght;
-            subsequence->iteration = i;
-            if (flag == 1) {
-                free(best_subsequence);
-            }
-            best_subsequence = subsequence;
-            flag = 1;
-        }
-        rotate(&tmp, NULL, 'a', 'n');
-        i++;
-    }
-    free(subsequence);
-    return (best_subsequence);
+			subseq->iteration = i;
+			(*best_stk) = subseq;
+		}
+		rotate(&tmp, NULL, 'a', 'n');
+	}
 }
 
 /*********************  Markup stack *********************/
 
-void	markup_stack(DblLinkedList *stack)
+void	markup_stack(t_List *stk)
 {
 	size_t	i;
-	t_best	*best_stack;
-	Node	*current;
-	
-	best_stack = find_best_sort_stack(stack);
+	t_best	*best_stk;
+	t_Node	*cur;
+
+	best_stk = malloc(sizeof(t_best) * (stk->size + 1));
+	if (!best_stk)
+		ft_error("Malloc error\n");
+	find_best_sort_stk(stk, &best_stk);
 	i = 0;
-	while (i < best_stack->iteration)
-	{
-		rotate(&stack, NULL, 'a', 'n');
-		i++;
-	}
-	i = best_stack[best_stack->lenght - 1].tailIndexes;
+	while (i++ < best_stk->iteration)
+		rotate(&stk, NULL, 'a', 'n');
+	i = best_stk[best_stk->lenght - 1].tailInd;
 	while ((int)i >= 0)
 	{
-		current = getNthq(best_stack->stack, i);
-		current->data.keep_in_stack = 1;
-		i = best_stack[i].prevIndexes;
+		cur = getNthq(best_stk->stk, i - 1);
+		cur->data.keep_in_stk = 1;
+		i = best_stk[i].prevInd;
 	}
 	i = 0;
-	while (i < best_stack->iteration)
-	{
-		reverse_rotate(&stack, NULL, 'a', 'n');
-		i++;
-	}
-	free(best_stack);
+	while (i++ < best_stk->iteration)
+		rev_rotate(&stk, NULL, 'a', 'n');
+	free(best_stk);
 }

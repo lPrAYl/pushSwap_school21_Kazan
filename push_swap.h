@@ -1,108 +1,90 @@
 #ifndef PUSH_SWAP_H
-#define PUSH_SWAP_H
+# define PUSH_SWAP_H
 
 # include "./libft/libft.h"
 
-typedef struct	s_compare
+typedef struct s_data
+{
+	int		value;
+	size_t	pos_in_stk;
+	size_t	index;
+	int		keep_in_stk;
+}				t_data;
+
+typedef struct s_Node
+{
+	t_data			data;
+	struct s_Node	*next;
+	struct s_Node	*prev;
+}				t_Node;
+
+typedef struct s_compare
 {
 	size_t	pos_min;
-	int 	min;
+	int		min;
 	size_t	pos_max;
-	int 	max;
+	int		max;
 }				t_compare;
 
-typedef struct  s_data
-{
-	int 	value;
-	size_t	pos_in_stack;
-	size_t	index;
-	int		keep_in_stack;
-}               t_data;
-
-typedef struct  Node
-{
-	struct s_data	data;
-	struct Node		*next;
-	struct Node		*prev;
-}               Node;
-
-typedef	struct	DblLinkedList
-{
-	size_t		size;
-	struct Node	*head;
-	struct Node	*tail;
-}				DblLinkedList;
-
-typedef struct	s_best
-{
-	size_t 	tailIndexes;
-	size_t 	prevIndexes;
-	size_t	lenght;
-	size_t	iteration;
-	DblLinkedList *stack;
-}				t_best;
-
-typedef struct	Ring
+typedef struct s_List
 {
 	size_t	size;
-	Node	*current;
-}				Ring;
+	t_Node	*head;
+	t_Node	*tail;
+}				t_List;
 
-typedef struct  s_optActions
+typedef struct s_best
 {
-    int ra;
-    int rb;
-    int rra;
-    int rrb;
-    int rr;
-    int rrr;
-    int total;
-}               t_optActions;
+	size_t		tailInd;
+	size_t		prevInd;
+	size_t		lenght;
+	size_t		iteration;
+	t_List	*stk;
+}				t_best;
 
-/********************* Functions for a doubly linked list *********************/
+typedef struct s_opt
+{
+	int	ra;
+	int	rb;
+	int	rra;
+	int	rrb;
+	int	rr;
+	int	rrr;
+	int	total;
+}			t_opt;
 
-DblLinkedList	*createDblLinkedList();
-void			deleteDblLinkedList(DblLinkedList **list);
-void			pushFront(DblLinkedList *list, struct s_data data);
-struct s_data	popFront(DblLinkedList *list);
-void			pushBack(DblLinkedList *list, struct s_data data);
-struct s_data	popBack(DblLinkedList *list);
-Node			*getNth(DblLinkedList *list, size_t index);
-Node			*getNthq(DblLinkedList *list, size_t index);
-void			insert(DblLinkedList *list, size_t index, struct s_data data);
-struct s_data	deleteNth(DblLinkedList *list, size_t index);
-void			printInt(struct s_data data);
-void			printDblLinkedList(DblLinkedList *list);
-DblLinkedList	*fromArray(void *arr, size_t n, size_t size);
+/**************** Functions for a doubly linked list ****************/
 
+t_List	*created_list(void);
+void	delete_List(t_List **list);
+void	pushFront(t_List *list, struct s_data data);
+t_data	popFront(t_List *list);
+void	pushBack(t_List *list, struct s_data data);
+t_data	popBack(t_List *list);
+t_Node	*getNthq(t_List *list, size_t index);
+void	insert(t_List *list, size_t index, struct s_data data);
+t_data	deleteNth(t_List *list, size_t index);
+void	print_List(t_List *list);
 
-void			ft_error(char *s);
-void	        find_markup_elem(DblLinkedList *stack, Node *head_A, size_t *next_keep_in_stack, size_t *prev_keep_in_stack);
-void			check_dup_and_index(DblLinkedList *stack);
-DblLinkedList	*ft_validate_data(char **argv);
-void			markup_stack(DblLinkedList *stack);
+/************************ Prepare functions ************************/
 
-t_optActions	find_min_count_actions(DblLinkedList *stackA, DblLinkedList *stackB);
-int             check_indexA(size_t index, size_t prev, size_t next);
+t_List	*validate_data(char **argv);
+void	check_dup_and_index(t_List *stkack, size_t index);
+void	markup_stack(t_List *stkack);
+t_opt	ind_min_count_actions(t_List *stkackA, t_List *stkackB);
+t_opt	init_actions(void);
+void	action(t_List *stkackA);
+void	find_count_actions(t_opt *actions);
+t_opt	find_min_count_actions(t_List *stkA, t_List *stkB);
+void	incrSubseq(t_List *stk, t_best **subseq, t_Node *cur, size_t i);
+int		check_indexA(size_t index, size_t prev, size_t next);
+void	markup_elem(t_List *stk, t_Node *hdA, size_t *nk, size_t *pk);
 
-void			swap(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
-void			rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
-void			reverse_rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
-void	        push(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write);
+/********************** Functions for actions **********************/
 
-
-void			sa(DblLinkedList **stackA);
-void			sb(DblLinkedList **stackB);
-void			ss(DblLinkedList **stackA, DblLinkedList **stackB);
-void			pa(DblLinkedList **stackA, DblLinkedList **stackB);
-void			pb(DblLinkedList **stackA, DblLinkedList **stackB);
-void			ra(DblLinkedList **stackA);
-void			rb(DblLinkedList **stackB);
-void			rr(DblLinkedList **stackA, DblLinkedList **stackB);
-void			rra(DblLinkedList **stackA);
-void			rrb(DblLinkedList **stackB);
-void			rrr(DblLinkedList **stackA, DblLinkedList **stackB);
-
-void			operation(DblLinkedList *stackA);
+void	swap(t_List **stkA, t_List **stkB, char st, char w);
+void	rotate(t_List **stkA, t_List **stkB, char st, char w);
+void	rev_rotate(t_List **stkA, t_List **stkB, char st, char w);
+void	push(t_List **stkA, t_List **stkB, char stkack, char w);
 
 #endif

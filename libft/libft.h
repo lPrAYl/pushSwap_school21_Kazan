@@ -45,6 +45,8 @@ typedef enum e_memory
 	clean_mem
 }				t_memory;
 
+int				ft_abs(int numb);
+void			ft_error(char *s);
 void			ft_sort(int *head, int *tail, int (*cmp)(int, int));
 void			deque_clear(t_deque *deque, void (*f)(void*));
 t_double_list	*double_list_init(void *ptr);

@@ -1,43 +1,43 @@
 #include "../../push_swap.h"
 
-static void	reverse_rotate_action(DblLinkedList **stack)
+static void	reverse_rotate_action(t_List **stk)
 {
 	size_t	size;
 	t_data	data;
-	Node	*tmp;
-	
-	size = (*stack)->size;
+	t_Node	*tmp;
+
+	size = (*stk)->size;
 	if (size < 2)
 		return ;
-	data = deleteNth(*stack, size - 1);
-	data.pos_in_stack = 0;
-	tmp = (*stack)->head;
+	data = deleteNth(*stk, size - 1);
+	data.pos_in_stk = 0;
+	tmp = (*stk)->head;
 	while (tmp)
 	{
-		tmp->data.pos_in_stack++;
+		tmp->data.pos_in_stk++;
 		tmp = tmp->next;
 	}
-	pushFront(*stack, data);
+	pushFront(*stk, data);
 }
 
-void	reverse_rotate(DblLinkedList **stackA, DblLinkedList **stackB, char stack, char write)
+void	rev_rotate(t_List **stkA, t_List **stkB, char stk, char write)
 {
-	if (stack == 'a')
+	if (stk == 'a')
 	{
-		reverse_rotate_action(stackA);
+		reverse_rotate_action(stkA);
 		if (write == 'w')
 			ft_putstr_fd("rra\n", 1);
 	}
-	else if (stack == 'b')
+	else if (stk == 'b')
 	{
-		reverse_rotate_action(stackB);
+		reverse_rotate_action(stkB);
 		if (write == 'w')
 			ft_putstr_fd("rrb\n", 1);
 	}
-	else if (stack == 's')
+	else if (stk == 's')
 	{
-		reverse_rotate_action(stackA);
-		reverse_rotate_action(stackB);
+		reverse_rotate_action(stkA);
+		reverse_rotate_action(stkB);
 		if (write == 'w')
 			ft_putstr_fd("rrr\n", 1);
 	}
