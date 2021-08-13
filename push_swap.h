@@ -35,10 +35,11 @@ typedef struct s_List
 
 typedef struct s_best
 {
-	size_t		tailInd;
-	size_t		prevInd;
-	size_t		lenght;
-	size_t		iteration;
+	size_t	tailInd;
+	size_t	prevInd;
+	size_t	lenght;
+	size_t  len;
+	size_t	iteration;
 	t_List	*stk;
 }				t_best;
 

@@ -61,15 +61,66 @@ static void	last_actions(t_List *stkA, t_List *stkB)
 	}
 }
 
+void    check_elem(t_List **stkA, t_List **stkB)
+{
+    size_t	nk;
+    size_t	pk;
+
+    markup_elem(*stkA, (*stkA)->head, &pk, &nk);
+    if ((*stkA)->head->data.keep_in_stk == 0 && (*stkA)->head->next->data.keep_in_stk == 1)
+    {
+        rotate(stkA, stkB, 'a', 'n');
+        markup_elem(*stkA, (*stkA)->head, &pk, &nk);
+        rev_rotate(stkA, stkB, 'a', 'n');
+        if (check_indexA((*stkA)->head->data.index, (*stkA)->head->next->data.index, nk))
+        {
+            (*stkA)->head->data.keep_in_stk = 1;
+            swap(stkA, stkB, 'a', 'w');
+            rev_rotate(stkA, stkB, 'a', 'w');
+        }
+        else
+            push(stkA, stkB, 'b', 'w');
+    }
+    else if ((*stkA)->head->data.keep_in_stk == 0 && (*stkA)->tail->data.keep_in_stk == 1)
+    {
+        rev_rotate(stkA, stkB, 'a', 'n');
+        markup_elem(*stkA, (*stkA)->head, &pk, &nk);
+        rotate(stkA, stkB, 'a', 'n');
+        if (check_indexA((*stkA)->head->data.index, pk, (*stkA)->tail->data.index))
+        {
+            (*stkA)->head->data.keep_in_stk = 1;
+            swap(stkA, stkB, 'a', 'w');
+            rotate(stkA, stkB, 'a', 'w');
+        }
+        else
+            push(stkA, stkB, 'b', 'w');
+    }
+    else if ((*stkA)->head->data.keep_in_stk == 1 && (*stkA)->head->next->data.keep_in_stk == 0 &&
+        check_indexA((*stkA)->head->next->data.index, pk, (*stkA)->head->data.index))
+    {
+        (*stkA)->head->next->data.keep_in_stk = 1;
+        swap(stkA, stkB, 'a', 'w');
+    }
+    else if ((*stkA)->head->data.keep_in_stk == 1 && (*stkA)->tail->data.keep_in_stk == 0 &&
+        check_indexA((*stkA)->tail->data.index, (*stkA)->head->data.index, nk))
+    {
+        (*stkA)->tail->data.keep_in_stk = 1;
+        rev_rotate(stkA, stkB, 'a', 'w');
+        swap(stkA, stkB, 'a', 'w');
+    }
+
+}
+
 void	action(t_List *stkA)
 {
 	t_List	*stkB;
 	size_t	count_unsort_elem;
 
 	stkB = created_list();
+    print_List(stkA);
 	while (1)
 	{
-		if (stkA->size < )
+        check_elem(&stkA, &stkB);
 		if (stkA->head->data.keep_in_stk == 1)
 		{
 			count_unsort_elem = check_unsort_elm(stkA);

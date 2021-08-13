@@ -36,6 +36,18 @@ static void	LongestIncreasingSubseq(t_List *stk, t_best **subseq)
 }
 /**************** Finding the maximum number of sorted items ****************/
 
+static void	*ft_memcpy(void *destination, const void *source, size_t size)
+{
+    size_t	i;
+
+    if (!destination && !source)
+        return (destination);
+    i = -1;
+    while (++i < size)
+        *(t_best *)(destination + i) = *(t_best *)(source + i);
+    return (destination);
+}
+
 static void	find_best_sort_stk(t_List *stk, t_best **best_stk)
 {
 	size_t	i;
@@ -44,17 +56,20 @@ static void	find_best_sort_stk(t_List *stk, t_best **best_stk)
 
 	i = 0;
 	tmp = stk;
-	init_subseq(tmp, best_stk);
-	subseq = *best_stk;
-	while (i++ < stk->size)
+	while (i < stk->size)
 	{
+	    subseq = malloc(sizeof(t_best) * (stk->size + 1));
+	    if (!subseq)
+	        ft_error("Malloc error\n");
 		LongestIncreasingSubseq(tmp, &subseq);
 		if (subseq->lenght > (*best_stk)->lenght)
 		{
 			subseq->iteration = i;
 			(*best_stk) = subseq;
+			free(subseq);
 		}
 		rotate(&tmp, NULL, 'a', 'n');
+		i++;
 	}
 }
 
@@ -66,9 +81,9 @@ void	markup_stack(t_List *stk)
 	t_best	*best_stk;
 	t_Node	*cur;
 
-	best_stk = malloc(sizeof(t_best) * (stk->size + 1));
-	if (!best_stk)
-		ft_error("Malloc error\n");
+	//best_stk = malloc(sizeof(t_best) * (stk->size + 1));
+	//if (!best_stk)
+	//	ft_error("Malloc error\n");
 	find_best_sort_stk(stk, &best_stk);
 	i = 0;
 	while (i++ < best_stk->iteration)
@@ -76,7 +91,7 @@ void	markup_stack(t_List *stk)
 	i = best_stk[best_stk->lenght - 1].tailInd;
 	while ((int)i >= 0)
 	{
-		cur = getNthq(best_stk->stk, i - 1);
+		cur = getNthq(best_stk->stk, i);
 		cur->data.keep_in_stk = 1;
 		i = best_stk[i].prevInd;
 	}
