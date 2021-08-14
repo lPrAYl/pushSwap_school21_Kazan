@@ -37,7 +37,7 @@ char		ft_char_from_itoa(int digit, t_printf *spec);
 
 t_printf	ft_spec_init(t_printf *spec);
 void		ft_flag_parsing(const char *format, t_printf *spec);
-void		ft_width_parsing (const char *format, t_printf *spec, va_list ap);
+void		ft_width_parsing(const char *format, t_printf *spec, va_list ap);
 void		ft_prec_parsing(const char *format, t_printf *spec, va_list ap);
 void		ft_type_parsing(const char *format, t_printf *spec);
 void		ft_format_parsing(const char *format, va_list ap, t_printf *spec);

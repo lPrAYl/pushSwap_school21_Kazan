@@ -38,7 +38,6 @@ typedef struct s_best
 	size_t	tailInd;
 	size_t	prevInd;
 	size_t	lenght;
-	size_t  len;
 	size_t	iteration;
 	t_List	*stk;
 }				t_best;
@@ -71,8 +70,8 @@ void	print_List(t_List *list);
 
 t_List	*validate_data(char **argv);
 void	check_dup_and_index(t_List *stkack, size_t index);
+int		check_sorting(t_List *stk);
 void	markup_stack(t_List *stkack);
-t_opt	ind_min_count_actions(t_List *stkackA, t_List *stkackB);
 t_opt	init_actions(void);
 void	action(t_List *stkackA);
 void	find_count_actions(t_opt *actions);

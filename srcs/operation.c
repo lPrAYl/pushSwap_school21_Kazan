@@ -61,54 +61,26 @@ static void	last_actions(t_List *stkA, t_List *stkB)
 	}
 }
 
-void    check_elem(t_List **stkA, t_List **stkB)
+static void	check_3_elem(t_List **stkA)
 {
-    size_t	nk;
-    size_t	pk;
-
-    markup_elem(*stkA, (*stkA)->head, &pk, &nk);
-    if ((*stkA)->head->data.keep_in_stk == 0 && (*stkA)->head->next->data.keep_in_stk == 1)
-    {
-        rotate(stkA, stkB, 'a', 'n');
-        markup_elem(*stkA, (*stkA)->head, &pk, &nk);
-        rev_rotate(stkA, stkB, 'a', 'n');
-        if (check_indexA((*stkA)->head->data.index, (*stkA)->head->next->data.index, nk))
-        {
-            (*stkA)->head->data.keep_in_stk = 1;
-            swap(stkA, stkB, 'a', 'w');
-            rev_rotate(stkA, stkB, 'a', 'w');
-        }
-        else
-            push(stkA, stkB, 'b', 'w');
-    }
-    else if ((*stkA)->head->data.keep_in_stk == 0 && (*stkA)->tail->data.keep_in_stk == 1)
-    {
-        rev_rotate(stkA, stkB, 'a', 'n');
-        markup_elem(*stkA, (*stkA)->head, &pk, &nk);
-        rotate(stkA, stkB, 'a', 'n');
-        if (check_indexA((*stkA)->head->data.index, pk, (*stkA)->tail->data.index))
-        {
-            (*stkA)->head->data.keep_in_stk = 1;
-            swap(stkA, stkB, 'a', 'w');
-            rotate(stkA, stkB, 'a', 'w');
-        }
-        else
-            push(stkA, stkB, 'b', 'w');
-    }
-    else if ((*stkA)->head->data.keep_in_stk == 1 && (*stkA)->head->next->data.keep_in_stk == 0 &&
-        check_indexA((*stkA)->head->next->data.index, pk, (*stkA)->head->data.index))
-    {
-        (*stkA)->head->next->data.keep_in_stk = 1;
-        swap(stkA, stkB, 'a', 'w');
-    }
-    else if ((*stkA)->head->data.keep_in_stk == 1 && (*stkA)->tail->data.keep_in_stk == 0 &&
-        check_indexA((*stkA)->tail->data.index, (*stkA)->head->data.index, nk))
-    {
-        (*stkA)->tail->data.keep_in_stk = 1;
-        rev_rotate(stkA, stkB, 'a', 'w');
-        swap(stkA, stkB, 'a', 'w');
-    }
-
+	if ((*stkA)->head->data.keep_in_stk == 1
+		&& (*stkA)->head->data.index < (*stkA)->head->next->data.index)
+	{
+		(*stkA)->head->next->data.keep_in_stk = 1;
+		swap(stkA, NULL, 'a', 'w');
+		rotate(stkA, NULL, 'a', 'w');
+	}
+	else if ((*stkA)->head->data.keep_in_stk == 0)
+	{
+		(*stkA)->head->data.keep_in_stk = 1;
+		swap(stkA, NULL, 'a', 'w');
+	}
+	else
+	{
+		(*stkA)->head->next->data.keep_in_stk = 1;
+		swap(stkA, NULL, 'a', 'w');
+		rev_rotate(stkA, NULL, 'a', 'w');
+	}
 }
 
 void	action(t_List *stkA)
@@ -117,10 +89,11 @@ void	action(t_List *stkA)
 	size_t	count_unsort_elem;
 
 	stkB = created_list();
-    print_List(stkA);
 	while (1)
 	{
-        check_elem(&stkA, &stkB);
+		count_unsort_elem = check_unsort_elm(stkA);
+		if (stkA->size == 3 && count_unsort_elem != 0)
+			check_3_elem(&stkA);
 		if (stkA->head->data.keep_in_stk == 1)
 		{
 			count_unsort_elem = check_unsort_elm(stkA);
@@ -130,8 +103,6 @@ void	action(t_List *stkA)
 				last_actions(stkA, stkB);
 		}
 		else
-		{
 			push(&stkA, &stkB, 'b', 'w');
-		}
 	}
 }

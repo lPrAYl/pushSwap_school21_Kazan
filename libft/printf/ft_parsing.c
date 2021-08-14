@@ -36,7 +36,7 @@ void	ft_flag_parsing(const char *format, t_printf *spec)
 	spec->iterator = i;
 }
 
-void	ft_width_parsing (const char *format, t_printf *spec, va_list ap)
+void	ft_width_parsing(const char *format, t_printf *spec, va_list ap)
 {
 	if (*(format + spec->iterator) == '*')
 	{
@@ -54,7 +54,7 @@ void	ft_width_parsing (const char *format, t_printf *spec, va_list ap)
 		spec->iterator++;
 }
 
-void 	ft_prec_parsing(const char *format, t_printf *spec, va_list ap)
+void	ft_prec_parsing(const char *format, t_printf *spec, va_list ap)
 {
 	if (*(format + spec->iterator) == '.')
 		spec->iterator++;

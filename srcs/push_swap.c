@@ -8,10 +8,9 @@ int	main(int argc, char **argv)
 	{
 		stkA = validate_data(argv);
 		markup_stack(stkA);
-		//while (1);
 		action(stkA);
 	}
 	else
-		ft_error("Not enough arguments\n");
+		ft_error("Error\n");
 	return (0);
 }

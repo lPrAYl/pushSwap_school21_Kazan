@@ -41,8 +41,8 @@ void	ft_printing_percent(t_printf *spec)
 
 void	ft_printing_string(t_printf *spec, char *str)
 {
-	int     len;
-	
+	int	len;
+
 	len = ft_strlen((str));
 	if (!str)
 		str = "(null)";
