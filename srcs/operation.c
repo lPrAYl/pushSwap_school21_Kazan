@@ -7,13 +7,12 @@ static size_t	check_unsort_elm(t_List *stk)
 
 	count = 0;
 	tmp = stk->head;
-	while (tmp && tmp->data.keep_in_stk == 1)
+	while (tmp)
 	{
-		count++;
+		if (tmp->data.keep_in_stk == 0)
+			count++;
 		tmp = tmp->next;
 	}
-	if (count == stk->size)
-		count = 0;
 	return (count);
 }
 

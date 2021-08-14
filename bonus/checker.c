@@ -5,7 +5,7 @@ static void	read_cmd(t_List **stkA, t_List **stkB, char *line)
 	if (!ft_strncmp(line, "sa", 3))
 		swap(stkA, NULL, 'a', 'n');
 	else if (!ft_strncmp(line, "sb", 3))
-		swap(stkB, NULL, 'b', 'n');
+		swap(NULL, stkB, 'b', 'n');
 	else if (!ft_strncmp(line, "ss", 3))
 		swap(stkA, stkB, 's', 'n');
 	else if (!ft_strncmp(line, "pa", 3))
@@ -15,13 +15,13 @@ static void	read_cmd(t_List **stkA, t_List **stkB, char *line)
 	else if (!ft_strncmp(line, "ra", 3))
 		rotate(stkA, NULL, 'a', 'n');
 	else if (!ft_strncmp(line, "rb", 3))
-		rotate(stkB, NULL, 'b', 'n');
+		rotate(NULL, stkB, 'b', 'n');
 	else if (!ft_strncmp(line, "rr", 3))
 		rotate(stkA, stkB, 's', 'n');
 	else if (!ft_strncmp(line, "rra", 4))
 		rev_rotate(stkA, NULL, 'a', 'n');
 	else if (!ft_strncmp(line, "rrb", 4))
-		rev_rotate(stkB, NULL, 'b', 'n');
+		rev_rotate(NULL, stkB, 'b', 'n');
 	else if (!ft_strncmp(line, "rrr", 3))
 		rev_rotate(stkA, stkB, 's', 'n');
 	else
@@ -34,18 +34,20 @@ int	main(int argc, char **argv)
 	t_List	*stkA;
 	t_List	*stkB;
 
-	stkA = created_list();
 	if (argc > 1)
 	{
 		stkA = validate_data(argv);
 		stkB = created_list();
 		while (get_next_line(0, &line))
+		{
 			read_cmd(&stkA, &stkB, line);
+			free(line);
+		}
+		if (check_sorting(stkA) && stkB->size == 0)
+			ft_putstr_fd("OK\n", 1);
+		else
+			ft_putstr_fd("KO\n", 1);
 	}
 	else
 		ft_error("Error\n");
-	if (check_sorting(stkA) && stkB->size == 0)
-		ft_putstr_fd("OK\n", 1);
-	else
-		ft_putstr_fd("KO\n", 1);
 }

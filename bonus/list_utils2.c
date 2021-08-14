@@ -100,7 +100,7 @@ void	print_List(t_List *list)
 	ft_printf("\n");
 }
 
-void	deletet_List(t_List **list)
+void	delete_List(t_List **list)
 {
 	t_Node	*tmp;
 	t_Node	*next;
